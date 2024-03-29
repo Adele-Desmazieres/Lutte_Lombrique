@@ -18,28 +18,60 @@ def draw(screen, objects):
 def mainloop(screen):
 	clock = pg.time.Clock()
 
-	w1 = Worm(50, 50)
-	w1.deplacementVec.vx = 30
-	w2 = Worm(100, 200)
-	w2.deplacementVec.vx = 10
-	objects = [w1, w2]
+	objects = []
+	# TODO : crash si NUMBEROFPLAYERS < 2 ?
+	for i in range(GameParameters.NUMBEROFPLAYERS):
+		w = Worm((i + 1) * 50, (i + 1) * 50)
+		w.deplacementVec.vx = 20
+		objects.append(w)
+
+	hasFired = False
+	inventoryOpen = False
+	currentId = 0
+	turnClock = 0
+
 	running = True
-	
+
 	while running:
 		xmax, ymax = pg.display.get_surface().get_size()
 		GameParameters.XMAX = xmax
 		GameParameters.YMAX = ymax
 		events = pg.event.get()
-		
+		pressed = pg.key.get_pressed()
+
 		# stops the program when closing
 		for event in events:
-			if event.type == pg.QUIT :
-				running = False 
-		
+			if event.type == pg.QUIT:
+				running = False
+
+
+		if not(inventoryOpen):
+			if pressed[pg.K_q]:
+				objects[currentId].moveLeft()
+			elif pressed[pg.K_d]:
+				objects[currentId].moveRight()
+			elif pressed[pg.K_SPACE]:
+				objects[currentId].jump()
+			elif pressed[pg.K_RSHIFT]:
+				inventoryOpen = True
+		else:
+			if pressed[pg.K_RSHIFT]:
+				pass
+				# TODO : change d'arme
+
+		# TODO : if arm selected : on peut tirer avec, Q et D change la visée de l'arme
+
 		# maj(objects)
+		for i in range(GameParameters.NUMBEROFPLAYERS):
+			objects[i].refreshState()
+
 		draw(screen, objects)
 		
 		clock.tick(40)
+		turnClock += 40
+		if (turnClock >= GameParameters.NUMBERMILLISECONDSTURN) or hasFired:
+			currentId = (currentId + 1) % GameParameters.NUMBEROFPLAYERS
+			turnClock = 0
 	
 	print("Fermeture du programme")
 	pg.quit()
