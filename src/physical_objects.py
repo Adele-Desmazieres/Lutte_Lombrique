@@ -65,6 +65,8 @@ class Worm(PhysicalSphere):
 	def moveRight(self):
 		if self.state == WormState.GROUNDED:
 			self.x += self.slideSpeed
+			# if (x, y - 1) == 0: # TODO: vérifier par rapport au centre du cercle
+				# TODO : while sol non dur: tomber + accélérer
 			# TODO : pas de terrain en dessous => state => airborne + vecteur de descente
 	
 	def moveLeft(self):
