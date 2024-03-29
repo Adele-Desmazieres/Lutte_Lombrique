@@ -1,4 +1,9 @@
 from game_parameters import *
+from enum import Enum
+
+class State(Enum):
+	GROUNDED = 0
+	AIRBORNE = 1
 
 class Vector:
 	
@@ -50,22 +55,29 @@ class PhysicalSphere:
 
 
 class Worm(PhysicalSphere):
-	
 	slideSpeed = 3
 	radius = 10
 	
 	def __init__(self, x, y):
 		PhysicalSphere.__init__(self, x, y, 10)
+		self.state = State.GROUNDED
 	
 	def moveRight(self):
-		self.x += self.slideSpeed
+		if self.state == State.GROUNDED:
+			self.x += self.slideSpeed
+			# TODO : pas de terrain en dessous => state => airborne + vecteur de descente
 	
 	def moveLeft(self):
-		self.x -= self.slideSpeed
+		if self.state == State.GROUNDED:
+			self.x -= self.slideSpeed
+			# TODO : pas de terrain en dessous => state => airborne + vecteur de descente
 	
 	def moveDown(self):
-		self.y += self.slideSpeed
+		if self.state == State.GROUNDED:
+			self.y += self.slideSpeed
+			# TODO : pas de terrain en dessous => state => airborne + vecteur de descente
 	
 	def moveUp(self):
-		self.y -= self.slideSpeed
-	
+		if self.state == State.GROUNDED:
+			self.y -= self.slideSpeed
+			# TODO : pas de terrain en dessous => state => airborne + vecteur de descente
