@@ -1,4 +1,5 @@
 import pygame as pg
+import math
 from physical_objects import *
 from game_parameters import *
 
@@ -19,10 +20,13 @@ def draw(screen, objects, inventoryOpen, sprites, selectedItem):
         pg.draw.circle(screen, GameParameters.WORMCOLOR, (o.x, o.y), o.radius)
 
     if (inventoryOpen):
-        portion_rect = pg.Rect(0 + 400 * selectedItem, 0 + 400 * selectedItem, 120, 120) # (400, 400),
+        y = math.floor((32 * selectedItem) / 256)
+        x = (32 * selectedItem) % 256
+        portion_rect = pg.Rect(x, 32 * y, 32, 32) # (400, 400),
         image_portion = sprites.subsurface(portion_rect)
         maxX, maxY = pg.display.get_surface().get_size()
-        screen.blit(image_portion, (maxX - 120, maxY - 120))
+        scaled_image = pg.transform.scale(image_portion, (128, 128))
+        screen.blit(scaled_image, (maxX - 128, maxY - 128))
 
 
     pg.display.flip()
@@ -30,7 +34,7 @@ def draw(screen, objects, inventoryOpen, sprites, selectedItem):
 
 def mainloop(screen):
     clock = pg.time.Clock()
-    sprites = pg.image.load("data.png")
+    sprites = pg.image.load("worms.png")
 
     objects = []
     items = [Item.PneumaticDrill, Item.Grenade, Item.PneumaticDrill, Item.Grenade]
