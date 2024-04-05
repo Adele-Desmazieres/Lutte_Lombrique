@@ -1,10 +1,28 @@
 import pygame as pg
 from physical_objects import *
 from game_parameters import *
+from terrain import *
 
 
-def draw(screen, objects):
+MAP1 = [[0, 0, 0, 0, 0, 0, 0] 
+	  ,[0, 1, 0, 0, 1, 0, 0] 
+	  ,[0, 1, 1, 0, 1, 0, 0] 
+	  ,[0, 1, 1, 1, 1, 0, 0] 
+	  ,[0, 1, 1, 0, 1, 0, 0] 
+	  ,[0, 0, 0, 1, 0, 0, 1]
+	  ]
+
+MAP = [[MAP1[j][i] for j in range(len(MAP1))] for i in range(len(MAP1[0]))]
+
+
+def draw(screen, terrain, objects):
 	screen.fill(GameParameters.BACKGROUNDCOLOR)
+	
+	for s in terrain.surfaces:
+		pg.draw.line(screen, (250, 250, 250), s.p, s.q, width=3)
+		m, n = s.normalVectorSegmentMiddle()
+		pg.draw.line(screen, (250, 50, 50), m, n, width=1) 
+		# pg.draw.circle(screen, (50, 150, 50), m, 3)
 	
 	for o in objects:
 		o.moveFree()
@@ -17,12 +35,16 @@ def draw(screen, objects):
 
 def mainloop(screen):
 	clock = pg.time.Clock()
-
-	w1 = Worm(50, 50)
-	w1.deplacementVec.vx = 30
-	w2 = Worm(100, 200)
-	w2.deplacementVec.vx = 10
-	objects = [w1, w2]
+	
+	terrain = Terrain(MAP)
+	
+	# w1 = Worm(50, 50)
+	# w1.deplacementVec.vx = 30
+	# w2 = Worm(100, 200)
+	# w2.deplacementVec.vx = 10
+	
+	objects = []
+	
 	running = True
 	
 	while running:
@@ -37,7 +59,7 @@ def mainloop(screen):
 				running = False 
 		
 		# maj(objects)
-		draw(screen, objects)
+		draw(screen, terrain, objects)
 		
 		clock.tick(40)
 	
