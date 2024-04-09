@@ -15,7 +15,6 @@ def draw(screen, worms, objects, inventoryOpen, inventory):
         w.draw(screen)
 
     for o in objects:
-        print("ntm")
         o.moveFree()
         o.draw(screen)
 
@@ -67,8 +66,10 @@ def mainloop(screen):
                 else:
                     if event.key == pg.K_RSHIFT:
                         inventory.changeSelectedItem()
-                    elif event.key == pg.K_SPACE: # TODO : weapon = nouvel objet | tool = pas d'objet créé
-                        inventory.triggerCurrentItem(worms[currentId], objects)
+                        # todo : use et shot c'est au moment où on retire le doigt de la barre !
+            if event.type == pg.KEYUP:
+                if event.key == pg.K_SPACE: # TODO : weapon = nouvel objet | tool = pas d'objet créé
+                    inventory.triggerCurrentItem(worms[currentId], objects)
 
         if currentState == State.Moving:
             if pressed[pg.K_q]:
@@ -76,11 +77,16 @@ def mainloop(screen):
             elif pressed[pg.K_d]:
                 worms[currentId].moveRight()
         else:
-            # todo : afficher arme
             if pressed[pg.K_q]:
-                pass # TODO : viser vers la gauche
+                worms[currentId].aimAngle -= 0.5 # todo : mutateur avec un angle max/min
+                print(worms[currentId].aimAngle)
+
             elif pressed[pg.K_d]:
-                pass  # TODO : viser vers la droite
+                worms[currentId].aimAngle += 0.5 # todo : mutateur avec un angle max/min
+                print(worms[currentId].aimAngle)
+
+            elif pressed[pg.K_SPACE]:
+                pass # todo : augmenter power
 
 
         for i in range(GameParameters.NUMBEROFPLAYERS):

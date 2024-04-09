@@ -67,6 +67,7 @@ class PhysicalSphere:
 class Worm(PhysicalSphere):
     slideSpeed = 4
     radius = 10
+    aimAngle = 0
 
     def __init__(self, x, y):
         PhysicalSphere.__init__(self, x, y, 10)
@@ -118,7 +119,7 @@ class Inventory:
             # TODO : faire un while pressed
             # TODO : faire un switch avec les différentes armes
             # TODO : changer la power
-            grenade = Grenade(worm.x, worm.y, 150)
+            grenade = Grenade(worm.x, worm.y, worm.aimAngle, 30)
             # TODO : remplacer 100 par le pourcentage de "charge", passer les coordonnées du worms en param
             objects.append(grenade)
         elif self.currentItem() == Item.PneumaticDrill:
@@ -161,14 +162,14 @@ class Weapon:
 
 
 class Grenade(Weapon, PhysicalSphere):
-    def __init__(self, x, y, power):
+    def __init__(self, x, y, angle, power):
         Weapon.__init__(self, 50)
-        self.radius = 5
-        PhysicalSphere.__init__(self, x, y, self.radius)
-        w1 = PhysicalSphere(x, y, 5)
-        w1.deplacementVec.vy = 4
+        #self.radius = 5
+        PhysicalSphere.__init__(self, x, y, 10)
+        self.deplacementVec.vy = -math.sin(math.radians(angle)) * power
+        self.deplacementVec.vx = -math.cos(math.radians(angle)) * power
 
 
     def draw(self, screen):
         print("draw grenade x : {} |  y : {} | radius : {}".format(self.x, self.y, self.radius))
-        pg.draw.circle(screen, (0, 255, 0), (self.x, self.y), self.radius * 2)
+        pg.draw.circle(screen, (0, 255, 0), (self.x, self.y), 10)
