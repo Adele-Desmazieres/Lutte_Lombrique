@@ -1,32 +1,26 @@
 import pygame as pg
-import math
 from physical_objects import *
 from game_parameters import *
 
-
-class Item(Enum):
-    PneumaticDrill = 0
-    Grenade = 1
 
 class State(Enum):
     Moving = 0
     InventoryOpen = 1
 
-def draw(screen, objects, inventoryOpen, sprites, selectedItem):
+def draw(screen, worms, objects, inventoryOpen, inventory):
     screen.fill(GameParameters.BACKGROUNDCOLOR)
 
+    for w in worms:
+        w.moveFree()
+        w.draw(screen)
+
     for o in objects:
+        print("ntm")
         o.moveFree()
-        pg.draw.circle(screen, GameParameters.WORMCOLOR, (o.x, o.y), o.radius)
+        o.draw(screen)
 
     if (inventoryOpen):
-        y = math.floor((32 * selectedItem) / 256)
-        x = (32 * selectedItem) % 256
-        portion_rect = pg.Rect(x, 32 * y, 32, 32) # (400, 400),
-        image_portion = sprites.subsurface(portion_rect)
-        maxX, maxY = pg.display.get_surface().get_size()
-        scaled_image = pg.transform.scale(image_portion, (128, 128))
-        screen.blit(scaled_image, (maxX - 128, maxY - 128))
+        inventory.draw(screen)
 
 
     pg.display.flip()
@@ -34,17 +28,16 @@ def draw(screen, objects, inventoryOpen, sprites, selectedItem):
 
 def mainloop(screen):
     clock = pg.time.Clock()
-    sprites = pg.image.load("worms.png")
 
+    worms = []
     objects = []
-    items = [Item.PneumaticDrill, Item.Grenade, Item.PneumaticDrill, Item.Grenade]
-    selectedItem = 0
+    inventory = Inventory()
     maxX, maxY = pg.display.get_surface().get_size()
     # TODO : crash si NUMBEROFPLAYERS < 2 ?
     for i in range(GameParameters.NUMBEROFPLAYERS):
         w = Worm((i + 1) * 50, maxY - Worm.radius - 1)
         #w.deplacementVec.vx = 20
-        objects.append(w)
+        worms.append(w)
 
     hasFired = False
     hasChanged = False
@@ -68,24 +61,20 @@ def mainloop(screen):
             if event.type == pg.KEYDOWN:
                 if currentState == State.Moving:
                     if event.key == pg.K_SPACE:
-                        objects[currentId].jump()
+                        worms[currentId].jump()
                     elif event.key == pg.K_RSHIFT and not hasFired:
                         currentState = State.InventoryOpen
                 else:
                     if event.key == pg.K_RSHIFT:
-                        selectedItem = (selectedItem + 1) % len(items)
-                    elif event.key == pg.K_SPACE:
-                        if isinstance(items[selectedItem], Weapon):
-                            # TODO : faire un while pressed
-                            items[selectedItem].shot(100) # TODO : remplacer 100 par le pourcentage de "charge", passer les coordonnées du worms en param
-                        else:
-                            items[selectedItem].use() # TODO : passer les coordonnées du worms en param
+                        inventory.changeSelectedItem()
+                    elif event.key == pg.K_SPACE: # TODO : weapon = nouvel objet | tool = pas d'objet créé
+                        inventory.triggerCurrentItem(worms[currentId], objects)
 
         if currentState == State.Moving:
             if pressed[pg.K_q]:
-                objects[currentId].moveLeft()
+                worms[currentId].moveLeft()
             elif pressed[pg.K_d]:
-                objects[currentId].moveRight()
+                worms[currentId].moveRight()
         else:
             # todo : afficher arme
             if pressed[pg.K_q]:
@@ -94,11 +83,10 @@ def mainloop(screen):
                 pass  # TODO : viser vers la droite
 
 
-        # maj(objects)
         for i in range(GameParameters.NUMBEROFPLAYERS):
-            objects[i].refreshState()
+            worms[i].refreshState()
 
-        draw(screen, objects, currentState == State.InventoryOpen, sprites, selectedItem)
+        draw(screen, worms, objects, currentState == State.InventoryOpen, inventory)
 
         clock.tick(40)
         turnClock += 40

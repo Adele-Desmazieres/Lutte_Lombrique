@@ -1,10 +1,17 @@
+import pygame as pg
 from game_parameters import *
 from enum import Enum
+import math
 
 
 class WormState(Enum):
     GROUNDED = 0
     AIRBORNE = 1
+
+
+class Item(Enum):
+    PneumaticDrill = 0
+    Grenade = 1
 
 
 class Vector:
@@ -78,6 +85,9 @@ class Worm(PhysicalSphere):
             self.deplacementVec.vy = GameParameters.JUMPPOWER
             self.state = WormState.AIRBORNE
 
+    def draw(self, screen):
+        pg.draw.circle(screen, GameParameters.WORMCOLOR, (self.x, self.y), self.radius)
+
     def refreshState(self):
         if True:  # TODO : si on touche le sol
             self.state = WormState.GROUNDED
@@ -90,25 +100,75 @@ class Worm(PhysicalSphere):
 #	Melee = 1
 #	Thrown = 2
 
+class Inventory:
+
+    def __init__(self):
+        self.selectedItem = 0
+        self.items = [Item.PneumaticDrill, Item.Grenade]
+        self.sprites = pg.image.load("worms.png")
+
+    def changeSelectedItem(self):
+        self.selectedItem = (self.selectedItem + 1) % len(self.items)
+
+    def currentItem(self):
+        return self.items[self.selectedItem]
+
+    def triggerCurrentItem(self, worm, objects):
+        if self.currentItem() == Item.Grenade:
+            # TODO : faire un while pressed
+            # TODO : faire un switch avec les différentes armes
+            # TODO : changer la power
+            grenade = Grenade(worm.x, worm.y, 150)
+            # TODO : remplacer 100 par le pourcentage de "charge", passer les coordonnées du worms en param
+            objects.append(grenade)
+        elif self.currentItem() == Item.PneumaticDrill:
+            pass  # TODO : passer les coordonnées du worms en param
+
+
+        w1 = PhysicalSphere(worm.x, worm.y, 5)
+        w1.deplacementVec.vy = 30
+        return w1
+
+    def draw(self, screen):
+        y = math.floor((32 * self.selectedItem) / 256)
+        x = (32 * self.selectedItem) % 256
+        portion_rect = pg.Rect(x, 32 * y, 32, 32)  # (400, 400),
+        image_portion = self.sprites.subsurface(portion_rect)
+        maxX, maxY = pg.display.get_surface().get_size()
+        scaled_image = pg.transform.scale(image_portion, (128, 128))
+        screen.blit(scaled_image, (maxX - 128, maxY - 128))
+
+
 class Utility:
     def __init__(self):
         pass
+
 
 class PneumaticDrill(Utility):
     def __init__(self):
         Utility.__init__(self)
 
-    def use(self):
-        pass
+    def use(self, worm):
+        print("Pneumatic drill used")
+
 
 class Weapon:
     def __init__(self, damage):
         self.damage = damage
 
     def shot(self, power):
-        pass  # TODO
+        print("pan pan")
 
 
-class Grenade(Weapon):
-    def __init__(self):
+class Grenade(Weapon, PhysicalSphere):
+    def __init__(self, x, y, power):
         Weapon.__init__(self, 50)
+        self.radius = 5
+        PhysicalSphere.__init__(self, x, y, self.radius)
+        w1 = PhysicalSphere(x, y, 5)
+        w1.deplacementVec.vy = 4
+
+
+    def draw(self, screen):
+        print("draw grenade x : {} |  y : {} | radius : {}".format(self.x, self.y, self.radius))
+        pg.draw.circle(screen, (0, 255, 0), (self.x, self.y), self.radius * 2)
