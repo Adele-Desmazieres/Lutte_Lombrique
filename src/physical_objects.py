@@ -40,7 +40,7 @@ class PhysicalSphere:
     def moveFree(self):
         self.deplacementVec.add(self.gravityVector)
         self.handleCollision()
-        print(self.deplacementVec)
+        #print(self.deplacementVec)
         self.x += self.deplacementVec.vx
         self.y += self.deplacementVec.vy
 
@@ -86,6 +86,14 @@ class Worm(PhysicalSphere):
             self.deplacementVec.vy = GameParameters.JUMPPOWER
             self.state = WormState.AIRBORNE
 
+    def aimLeft(self):
+        if self.aimAngle > (-90):
+            self.aimAngle -= 0.5
+
+    def aimRight(self):
+        if self.aimAngle < 90:
+            self.aimAngle += 0.5
+
     def draw(self, screen):
         pg.draw.circle(screen, GameParameters.WORMCOLOR, (self.x, self.y), self.radius)
 
@@ -119,7 +127,7 @@ class Inventory:
             # TODO : faire un while pressed
             # TODO : faire un switch avec les différentes armes
             # TODO : changer la power
-            grenade = Grenade(worm.x, worm.y, worm.aimAngle, 30)
+            grenade = Grenade(worm.x, worm.y, worm.aimAngle, 10)
             # TODO : remplacer 100 par le pourcentage de "charge", passer les coordonnées du worms en param
             objects.append(grenade)
         elif self.currentItem() == Item.PneumaticDrill:
@@ -166,10 +174,9 @@ class Grenade(Weapon, PhysicalSphere):
         Weapon.__init__(self, 50)
         #self.radius = 5
         PhysicalSphere.__init__(self, x, y, 10)
-        self.deplacementVec.vy = -math.sin(math.radians(angle)) * power
-        self.deplacementVec.vx = -math.cos(math.radians(angle)) * power
+        self.deplacementVec.vy = math.cos(angle) * power
+        self.deplacementVec.vx = math.sin(angle) * power
 
 
     def draw(self, screen):
-        print("draw grenade x : {} |  y : {} | radius : {}".format(self.x, self.y, self.radius))
         pg.draw.circle(screen, (0, 255, 0), (self.x, self.y), 10)

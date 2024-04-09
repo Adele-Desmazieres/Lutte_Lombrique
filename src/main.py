@@ -45,6 +45,7 @@ def mainloop(screen):
     terrain = Terrain(MAP)
     worms = []
     objects = []
+    rangedWeapons = [Item.Grenade]
     inventory = Inventory()
     maxX, maxY = pg.display.get_surface().get_size()
     # TODO : crash si NUMBEROFPLAYERS < 2 ?
@@ -82,22 +83,23 @@ def mainloop(screen):
                     if event.key == pg.K_RSHIFT:
                         inventory.changeSelectedItem()
                         # todo : use et shot c'est au moment où on retire le doigt de la barre !
-            if event.type == pg.KEYUP:
+            if event.type == pg.KEYUP and currentState == State.InventoryOpen:
                 if event.key == pg.K_SPACE: # TODO : weapon = nouvel objet | tool = pas d'objet créé
                     inventory.triggerCurrentItem(worms[currentId], objects)
+                    hasFired = True
 
         if currentState == State.Moving:
             if pressed[pg.K_q]:
                 worms[currentId].moveLeft()
             elif pressed[pg.K_d]:
                 worms[currentId].moveRight()
-        else:
+        elif inventory.currentItem() in rangedWeapons: # TODO : dessiner le pointeur de l'arme
             if pressed[pg.K_q]:
-                worms[currentId].aimAngle -= 0.5 # todo : mutateur avec un angle max/min
+                worms[currentId].aimLeft()
                 print(worms[currentId].aimAngle)
 
             elif pressed[pg.K_d]:
-                worms[currentId].aimAngle += 0.5 # todo : mutateur avec un angle max/min
+                worms[currentId].aimRight()
                 print(worms[currentId].aimAngle)
 
             elif pressed[pg.K_SPACE]:
@@ -115,6 +117,7 @@ def mainloop(screen):
             currentId = (currentId + 1) % GameParameters.NUMBEROFPLAYERS
             turnClock = 0
             currentState = State.Moving
+            hasFired = False
             print("Nouveau tour")
 
     print("Fermeture du programme")
