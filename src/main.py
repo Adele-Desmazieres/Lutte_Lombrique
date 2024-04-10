@@ -2,6 +2,7 @@ import pygame as pg
 from physical_objects import *
 from game_parameters import *
 from terrain import *
+import random
 
 MAP1 = [[0, 0, 0, 0, 0, 0, 0] 
       ,[0, 1, 0, 0, 1, 0, 0]
@@ -10,6 +11,25 @@ MAP1 = [[0, 0, 0, 0, 0, 0, 0]
       ,[0, 1, 1, 0, 1, 0, 0]
       ,[0, 0, 0, 1, 0, 0, 1]
       ]
+
+COLORS = [(255, 69, 0), (255, 150, 0), (255, 215, 0)]
+
+def draw_explosion(screen, position):
+    max_radius = 60
+    num_circles = 10
+    clock = pg.time.Clock()
+
+    pg.draw.circle(screen, random.choice(COLORS), position, max_radius)
+
+    for i in range(num_circles):
+        radius = random.randint(5, max_radius)
+        color = random.choice(COLORS)
+        pg.draw.circle(screen, color, position, radius)
+        max_radius -= 5
+        clock.tick(40)
+        pg.display.flip() # TODO : pas très propre ? à changer ?
+
+
 
 MAP = [[MAP1[j][i] for j in range(len(MAP1))] for i in range(len(MAP1[0]))]
 
@@ -123,6 +143,7 @@ def mainloop(screen):
             if isinstance(obj, Grenade):
                 if pg.time.get_ticks() - obj.creation_tick > 5000:
                     # todo : boom animation + appliquer dégâts au terrain
+                    draw_explosion(screen, (obj.x, obj.y))
                     obj.explode(worms)
                     state = GameState.INTERACTIVE
                     objects.remove(obj)
@@ -132,6 +153,7 @@ def mainloop(screen):
                 worms.remove(w)
 
         if len(worms) <= 1:
+            print("Fin de la partie")
             break
         # todo: si plus qu'un seul wormms, lui attribué la victoire?
 
