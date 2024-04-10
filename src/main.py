@@ -13,6 +13,12 @@ MAP1 = [[0, 0, 0, 0, 0, 0, 0]
 
 MAP = [[MAP1[j][i] for j in range(len(MAP1))] for i in range(len(MAP1[0]))]
 
+
+class GameState(Enum):
+    INTERACTIVE = 1
+    ANIMATION = 2
+
+
 class State(Enum):
     Moving = 0
     InventoryOpen = 1
@@ -45,6 +51,7 @@ def draw(screen, terrain, worms, objects, inventoryOpen, inventory, rangedWeapon
 def mainloop(screen):
     clock = pg.time.Clock()
     terrain = Terrain(MAP)
+    state = GameState.INTERACTIVE
     worms = []
     objects = []
     rangedWeapons = [Item.Grenade]
@@ -71,40 +78,42 @@ def mainloop(screen):
         events = pg.event.get()
         pressed = pg.key.get_pressed()
 
-        # stops the program when closing
-        for event in events:
-            if event.type == pg.QUIT:
-                running = False
-            if event.type == pg.KEYDOWN:
-                if currentState == State.Moving:
+        if state == GameState.INTERACTIVE:
+            # stops the program when closing
+            for event in events:
+                if event.type == pg.QUIT:
+                    running = False
+                if event.type == pg.KEYDOWN:
+                    if currentState == State.Moving:
+                        if event.key == pg.K_SPACE:
+                            worms[currentId].jump()
+                        elif event.key == pg.K_RSHIFT and not hasFired:
+                            currentState = State.InventoryOpen
+                    else:
+                        if event.key == pg.K_RSHIFT:
+                            inventory.changeSelectedItem()
+                if event.type == pg.KEYUP and currentState == State.InventoryOpen:
                     if event.key == pg.K_SPACE:
-                        worms[currentId].jump()
-                    elif event.key == pg.K_RSHIFT and not hasFired:
-                        currentState = State.InventoryOpen
-                else:
-                    if event.key == pg.K_RSHIFT:
-                        inventory.changeSelectedItem()
-            if event.type == pg.KEYUP and currentState == State.InventoryOpen:
-                if event.key == pg.K_SPACE:
-                    inventory.triggerCurrentItem(worms[currentId], objects)
-                    hasFired = True
+                        inventory.triggerCurrentItem(worms[currentId], objects)
+                        state = GameState.ANIMATION # TODO : seulement pour les weapons ou les rangedWeapons?
+                        hasFired = True
 
-        if currentState == State.Moving:
-            if pressed[pg.K_q]:
-                worms[currentId].moveLeft()
-            elif pressed[pg.K_d]:
-                worms[currentId].moveRight()
-        elif inventory.currentItem() in rangedWeapons:
-            if pressed[pg.K_q]:
-                worms[currentId].aimLeft()
-                print(worms[currentId].aimAngle)
+            if currentState == State.Moving:
+                if pressed[pg.K_q]:
+                    worms[currentId].moveLeft()
+                elif pressed[pg.K_d]:
+                    worms[currentId].moveRight()
+            elif inventory.currentItem() in rangedWeapons:
+                if pressed[pg.K_q]:
+                    worms[currentId].aimLeft()
+                    print(worms[currentId].aimAngle)
 
-            if pressed[pg.K_d]:
-                worms[currentId].aimRight()
-                print(worms[currentId].aimAngle)
+                if pressed[pg.K_d]:
+                    worms[currentId].aimRight()
+                    print(worms[currentId].aimAngle)
 
-            if pressed[pg.K_SPACE]:
-                worms[currentId].charge()
+                if pressed[pg.K_SPACE]:
+                    worms[currentId].charge()
 
 
         for i in range(len(worms)):
@@ -115,6 +124,7 @@ def mainloop(screen):
                 if pg.time.get_ticks() - obj.creation_tick > 5000:
                     # todo : boom animation + appliquer dégâts au terrain
                     obj.explode(worms)
+                    state = GameState.INTERACTIVE
                     objects.remove(obj)
 
         for w in worms:

@@ -41,7 +41,7 @@ class PhysicalSphere:
     def moveFree(self):
         self.deplacementVec.add(self.gravityVector)
         self.handleCollision()
-        #print(self.deplacementVec)
+        # print(self.deplacementVec)
         self.x += self.deplacementVec.vx
         self.y += self.deplacementVec.vy
 
@@ -69,7 +69,7 @@ class Worm(PhysicalSphere):
     slideSpeed = 4
     radius = 10
     aimAngle = -90
-    powerCharge = 0 # a percentage which will be divided by (100/max power)
+    powerCharge = 0  # a percentage which will be divided by (100/max power)
     hp = 100
 
     def __init__(self, x, y):
@@ -79,7 +79,6 @@ class Worm(PhysicalSphere):
 
     def loseHp(self, damage):
         self.hp -= damage
-
 
     def moveRight(self):
         if self.state == WormState.GROUNDED:
@@ -168,7 +167,6 @@ class Inventory:
         elif self.currentItem() == Item.PneumaticDrill:
             pass  # TODO : passer les coordonnées du worms en param
 
-
         w1 = PhysicalSphere(worm.x, worm.y, 5)
         w1.deplacementVec.vy = 30
         return w1
@@ -212,16 +210,17 @@ class Grenade(Weapon, PhysicalSphere):
     def __init__(self, x, y, angle, power):
         Weapon.__init__(self, 50)
         PhysicalSphere.__init__(self, x, y, self.radius)
-        power /= 1.3 # divided by 1.3 because max power is 77
+        power /= 1.3  # divided by 1.3 because max power is 77
         self.deplacementVec.vy = math.sin(math.radians(angle)) * power
         self.deplacementVec.vx = math.cos(math.radians(angle)) * power
         self.creation_tick = pg.time.get_ticks()
 
     def explode(self, worms):
         for w in worms:
-            distance = math.sqrt((w.x - self.x)**2 + (w.y - self.y)**2)
+            distance = math.sqrt((w.x - self.x) ** 2 + (w.y - self.y) ** 2)
             if distance <= self.explosionRadius:
                 w.loseHp(self.damage)
+        # todo : passer le terrain en paramètre et reprendre la même logique pour casser les bouts de terrain
 
     def draw(self, screen):
         pg.draw.circle(screen, (0, 255, 0), (self.x, self.y), self.radius)
