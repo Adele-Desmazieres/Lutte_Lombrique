@@ -30,6 +30,7 @@ class Vector:
 
 class PhysicalSphere:
     gravityVector = Vector(0, GameParameters.GRAVITY)
+    bouncingAbsorption = 0.6
 
     def __init__(self, x, y, radius):
         self.x = x
@@ -48,15 +49,15 @@ class PhysicalSphere:
         stuckGround = False
         if (self.x + self.radius + self.deplacementVec.vx > GameParameters.XMAX) or (
                 self.x - self.radius + self.deplacementVec.vx < GameParameters.XMIN):
-            self.deplacementVec.vx = -self.deplacementVec.vx * GameParameters.BOUNCINGABSORPTION
-            self.deplacementVec.vy *= GameParameters.BOUNCINGABSORPTION
+            self.deplacementVec.vx = -self.deplacementVec.vx * self.bouncingAbsorption
+            self.deplacementVec.vy *= self.bouncingAbsorption
 
         if (self.y + self.radius + self.deplacementVec.vy > GameParameters.YMAX) or (
                 self.y - self.radius + self.deplacementVec.vy < GameParameters.YMIN):
             if (self.y + self.radius + self.deplacementVec.vy > GameParameters.YMAX) and (self.deplacementVec.vy < 2):
                 stuckGround = True
-            self.deplacementVec.vx *= GameParameters.BOUNCINGABSORPTION
-            self.deplacementVec.vy = -self.deplacementVec.vy * GameParameters.BOUNCINGABSORPTION
+            self.deplacementVec.vx *= self.bouncingAbsorption
+            self.deplacementVec.vy = -self.deplacementVec.vy * self.bouncingAbsorption
 
         # colle l'objet au sol
         if stuckGround:
@@ -67,11 +68,18 @@ class PhysicalSphere:
 class Worm(PhysicalSphere):
     slideSpeed = 4
     radius = 10
-    aimAngle = 0
+    aimAngle = -90
+    powerCharge = 0 # a percentage which will be divided by (100/max power)
+    hp = 100
 
     def __init__(self, x, y):
         PhysicalSphere.__init__(self, x, y, 10)
         self.state = WormState.GROUNDED
+        self.bouncingAbsorption = 0.4
+
+    def loseHp(self, damage):
+        self.hp -= damage
+
 
     def moveRight(self):
         if self.state == WormState.GROUNDED:
@@ -87,18 +95,49 @@ class Worm(PhysicalSphere):
             self.state = WormState.AIRBORNE
 
     def aimLeft(self):
-        if self.aimAngle > (-90):
-            self.aimAngle -= 0.5
+        if self.aimAngle > (-165):
+            self.aimAngle -= 1
 
     def aimRight(self):
-        if self.aimAngle < 90:
-            self.aimAngle += 0.5
+        if self.aimAngle < (-15):
+            self.aimAngle += 1
+
+    def charge(self):
+        if self.powerCharge < 100:
+            self.powerCharge += 2
 
     def draw(self, screen):
         pg.draw.circle(screen, GameParameters.WORMCOLOR, (self.x, self.y), self.radius)
 
+    import math
+    import pygame as pg
+
+    def draw_aiming_cursor(self, screen):
+        if self.powerCharge <= 0:
+            return
+
+        color = (255, 255, 255)
+
+        end_x = self.x + math.cos(math.radians(self.aimAngle)) * self.powerCharge
+        end_y = self.y + math.sin(math.radians(self.aimAngle)) * self.powerCharge
+
+        start_thickness = 1
+        end_thickness = 10
+
+        perpendicular_angle = math.radians(self.aimAngle + 90)
+        dx = math.cos(perpendicular_angle)
+        dy = math.sin(perpendicular_angle)
+
+        start_left = (self.x - dx * start_thickness / 2, self.y - dy * start_thickness / 2)
+        start_right = (self.x + dx * start_thickness / 2, self.y + dy * start_thickness / 2)
+
+        end_left = (end_x - dx * end_thickness / 2, end_y - dy * end_thickness / 2)
+        end_right = (end_x + dx * end_thickness / 2, end_y + dy * end_thickness / 2)
+
+        pg.draw.polygon(screen, color, [start_left, start_right, end_right, end_left])
+
     def refreshState(self):
-        if True:  # TODO : si on touche le sol
+        if True:  # TODO : si on touche le sol, collision avec le terrain
             self.state = WormState.GROUNDED
         else:
             self.state = WormState.AIRBORNE
@@ -124,11 +163,7 @@ class Inventory:
 
     def triggerCurrentItem(self, worm, objects):
         if self.currentItem() == Item.Grenade:
-            # TODO : faire un while pressed
-            # TODO : faire un switch avec les différentes armes
-            # TODO : changer la power
-            grenade = Grenade(worm.x, worm.y, worm.aimAngle, 10)
-            # TODO : remplacer 100 par le pourcentage de "charge", passer les coordonnées du worms en param
+            grenade = Grenade(worm.x, worm.y, worm.aimAngle, (worm.powerCharge / 10))
             objects.append(grenade)
         elif self.currentItem() == Item.PneumaticDrill:
             pass  # TODO : passer les coordonnées du worms en param
@@ -170,13 +205,23 @@ class Weapon:
 
 
 class Grenade(Weapon, PhysicalSphere):
+    radius = 8
+    bouncingAbsorption = 0.6
+    explosionRadius = 60
+
     def __init__(self, x, y, angle, power):
         Weapon.__init__(self, 50)
-        #self.radius = 5
-        PhysicalSphere.__init__(self, x, y, 10)
-        self.deplacementVec.vy = math.cos(angle) * power
-        self.deplacementVec.vx = math.sin(angle) * power
+        PhysicalSphere.__init__(self, x, y, self.radius)
+        power /= 1.3 # divided by 1.3 because max power is 77
+        self.deplacementVec.vy = math.sin(math.radians(angle)) * power
+        self.deplacementVec.vx = math.cos(math.radians(angle)) * power
+        self.creation_tick = pg.time.get_ticks()
 
+    def explode(self, worms):
+        for w in worms:
+            distance = math.sqrt((w.x - self.x)**2 + (w.y - self.y)**2)
+            if distance <= self.explosionRadius:
+                w.loseHp(self.damage)
 
     def draw(self, screen):
-        pg.draw.circle(screen, (0, 255, 0), (self.x, self.y), 10)
+        pg.draw.circle(screen, (0, 255, 0), (self.x, self.y), self.radius)

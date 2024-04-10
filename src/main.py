@@ -17,7 +17,7 @@ class State(Enum):
     Moving = 0
     InventoryOpen = 1
 
-def draw(screen, terrain, worms, objects, inventoryOpen, inventory):
+def draw(screen, terrain, worms, objects, inventoryOpen, inventory, rangedWeapons, currentId):
     screen.fill(GameParameters.BACKGROUNDCOLOR)
 
     for s in terrain.surfaces:
@@ -36,6 +36,8 @@ def draw(screen, terrain, worms, objects, inventoryOpen, inventory):
     if (inventoryOpen):
         inventory.draw(screen)
 
+    if inventory.currentItem() in rangedWeapons:
+        worms[currentId].draw_aiming_cursor(screen)
 
     pg.display.flip()
 
@@ -48,14 +50,14 @@ def mainloop(screen):
     rangedWeapons = [Item.Grenade]
     inventory = Inventory()
     maxX, maxY = pg.display.get_surface().get_size()
-    # TODO : crash si NUMBEROFPLAYERS < 2 ?
+    if GameParameters.NUMBEROFPLAYERS < 2:
+        exit()
     for i in range(GameParameters.NUMBEROFPLAYERS):
         w = Worm((i + 1) * 50, maxY - Worm.radius - 1)
         #w.deplacementVec.vx = 20
         worms.append(w)
 
     hasFired = False
-    hasChanged = False
     currentState = State.Moving
     currentId = 0
     turnClock = 0
@@ -70,7 +72,7 @@ def mainloop(screen):
         pressed = pg.key.get_pressed()
 
         # stops the program when closing
-        for event in events: # TODO : KEYUP du space : on tire, pendant le keypressed, on charge, modifier ce qu'il y a à modifier
+        for event in events:
             if event.type == pg.QUIT:
                 running = False
             if event.type == pg.KEYDOWN:
@@ -82,9 +84,8 @@ def mainloop(screen):
                 else:
                     if event.key == pg.K_RSHIFT:
                         inventory.changeSelectedItem()
-                        # todo : use et shot c'est au moment où on retire le doigt de la barre !
             if event.type == pg.KEYUP and currentState == State.InventoryOpen:
-                if event.key == pg.K_SPACE: # TODO : weapon = nouvel objet | tool = pas d'objet créé
+                if event.key == pg.K_SPACE:
                     inventory.triggerCurrentItem(worms[currentId], objects)
                     hasFired = True
 
@@ -93,28 +94,46 @@ def mainloop(screen):
                 worms[currentId].moveLeft()
             elif pressed[pg.K_d]:
                 worms[currentId].moveRight()
-        elif inventory.currentItem() in rangedWeapons: # TODO : dessiner le pointeur de l'arme
+        elif inventory.currentItem() in rangedWeapons:
             if pressed[pg.K_q]:
                 worms[currentId].aimLeft()
                 print(worms[currentId].aimAngle)
 
-            elif pressed[pg.K_d]:
+            if pressed[pg.K_d]:
                 worms[currentId].aimRight()
                 print(worms[currentId].aimAngle)
 
-            elif pressed[pg.K_SPACE]:
-                pass # todo : augmenter power
+            if pressed[pg.K_SPACE]:
+                worms[currentId].charge()
 
 
-        for i in range(GameParameters.NUMBEROFPLAYERS):
+        for i in range(len(worms)):
             worms[i].refreshState()
 
-        draw(screen, terrain, worms, objects, currentState == State.InventoryOpen, inventory)
+        for obj in objects:
+            if isinstance(obj, Grenade):
+                if pg.time.get_ticks() - obj.creation_tick > 5000:
+                    # todo : boom animation + appliquer dégâts au terrain
+                    obj.explode(worms)
+                    objects.remove(obj)
+
+        for w in worms:
+            if w.hp <= 0:
+                worms.remove(w)
+
+        if len(worms) <= 1:
+            break
+        # todo: si plus qu'un seul wormms, lui attribué la victoire?
+
+        draw(screen, terrain, worms, objects, currentState == State.InventoryOpen, inventory, rangedWeapons, currentId)
 
         clock.tick(40)
         turnClock += 40
         if (turnClock >= GameParameters.NUMBERMILLISECONDSTURN) or hasFired:
-            currentId = (currentId + 1) % GameParameters.NUMBEROFPLAYERS
+            worms[currentId].powerCharge = 0
+            worms[currentId].aimAngle = -90
+            currentId = (currentId + 1) % len(worms)
+            print("currentId : {}".format(currentId))
             turnClock = 0
             currentState = State.Moving
             hasFired = False
