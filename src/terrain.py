@@ -47,14 +47,17 @@ class Terrain:
 		self.generation_threshold = generation_threshold # the threshold above which terrain will be placed
 		self.square_size = square_size # number of pixels in a square side
 		terrainSurfaces = set()
+		
 		for i in range(len(map)-1):
 			for j in range(len(map[i])-1):
 				coefs = (map[i][j], map[i][j+1], map[i+1][j+1], map[i+1][j])
 				surfaces = self.getLignes(coefs, (i*self.square_size, j*self.square_size))
 				terrainSurfaces = terrainSurfaces.union(surfaces)
 		self.surfaces = terrainSurfaces
-		# print(self.surfaces)
-				
+		
+		polygons = self.init_points_lists() # a list of lists of (int, int)
+		self.polygons = polygons
+		# print(self.surfaces)		
 	
 	# input : les coefs des 4 coins d'un carré, ses coordonées du coin supérieur gauche
 	# output : la liste des lignes passant par ce carré
@@ -121,8 +124,36 @@ class Terrain:
 				return {SurfaceTerrain(bottomCoord, leftCoord)}
 			case _: # case 0 and 15 : no terrain limitation (air square or full terrain square)
 				return {}
+	
+	def init_points_lists(self):
+		points_lists = []
+		current_list = []
+		surfaces = self.surfaces.copy()
+		
+		while (surfaces):
+			s = surfaces.pop()
+			current_list.append(s.p)
+			current_list.append(s.q)
+			p = s.q
+			
+			while (len({s for s in surfaces if coords_almost_equals(s.p, p)}) >= 1): # tant que s a un vecteur partant du point précédent
+				s = {s for s in surfaces if coords_almost_equals(s.p, p)}.pop() # dans surfaces et son p est égal à p
+				surfaces.remove(s)
+				current_list.append(s.q)
+				p = s.q
+			
+			# current_list.append(current_list[0])
+			points_lists.append(current_list)
+			current_list = []
+		
+		return points_lists
+	
 
 
+def coords_almost_equals(c, d):
+	epsilon = 0.001
+	return (abs(c[0]-d[0]) < epsilon and abs(c[1]-d[1]) < epsilon)
+	# return c == d
 
 def middleCoord(c1, c2):
 	return ((c1[0]+c2[0])/2, (c1[1]+c2[1])/2)

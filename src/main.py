@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import pygame as pg
-import random
+import random as rd
 import os
 from physical_objects import *
 from game_parameters import *
@@ -26,11 +26,11 @@ def draw_explosion(screen, position):
     num_circles = 10
     clock = pg.time.Clock()
 
-    pg.draw.circle(screen, random.choice(COLORS), position, max_radius)
+    pg.draw.circle(screen, rd.choice(COLORS), position, max_radius)
 
     for i in range(num_circles):
-        radius = random.randint(5, max_radius)
-        color = random.choice(COLORS)
+        radius = rd.randint(5, max_radius)
+        color = rd.choice(COLORS)
         pg.draw.circle(screen, color, position, radius)
         max_radius -= 5
         clock.tick(40)
@@ -40,6 +40,11 @@ def draw_explosion(screen, position):
 def draw(screen, terrain, worms, objects, inventoryOpen, inventory, rangedWeapons, currentId):
     screen.fill(GameParameters.BACKGROUNDCOLOR)
 	
+    for polygon in terrain.polygons:
+        if len(polygon) > 2:
+            pg.draw.polygon(screen, (rd.randrange(255), rd.randrange(255), rd.randrange(255)), polygon)
+            pg.draw.polygon(screen, (200, 150, 50), polygon)
+            
     for s in terrain.surfaces:
         pg.draw.line(screen, (250, 250, 250), s.p, s.q, width=3)
         m, n = s.normalVectorSegmentMiddle()
@@ -69,21 +74,33 @@ def mainloop(screen):
     GameParameters.YMAX = ymax
     clock = pg.time.Clock()
     
+    # map = [[0, 0, 0, 0, 0, 0, 0], 
+    #        [0, 1, 1, 1, 0, 0, 0],
+    #        [0, 1, 1, 1, 1, 0, 0],
+    #        [0, 1, 1, 1, 1, 1, 0],
+    #        [0, 0, 0, 0, 0, 0, 0]
+    #        ]
+    # generation_threshold = 0.5
+    # square_size = 60
+    
     map = Map2D(90, 60, 0, 10).getCoefsFormatted()
     generation_threshold = 5
     square_size = min(GameParameters.YMAX/(len(map[0])-1), GameParameters.XMAX/(len(map)-1))
+    
     terrain = Terrain(map, square_size, generation_threshold)
+    print(len(terrain.surfaces))
+    print(len(terrain.polygons))
 	
     state = GameState.INTERACTIVE
     worms = []
     objects = []
     rangedWeapons = [Item.Grenade]
     inventory = Inventory()
-    maxX, maxY = pg.display.get_surface().get_size()
+    
     if GameParameters.NUMBEROFPLAYERS < 2:
         exit()
     for i in range(GameParameters.NUMBEROFPLAYERS):
-        w = Worm((i + 1) * 50, maxY - Worm.radius - 1)
+        w = Worm((i + 1) * 50, ymax - Worm.radius - 1)
         #w.deplacementVec.vx = 20
         worms.append(w)
 
