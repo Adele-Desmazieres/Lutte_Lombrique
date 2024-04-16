@@ -7,10 +7,13 @@ from physical_objects import *
 from game_parameters import *
 from terrain import *
 from map2D import *
-
+from PIL import Image, ImageDraw
 
 
 COLORS = [(255, 69, 0), (255, 150, 0), (255, 215, 0)]
+BACKGROUNDIMAGE = None
+PYGAMEBACKGROUNDIMAGE = None
+
 
 class GameState(Enum):
     INTERACTIVE = 1
@@ -38,17 +41,14 @@ def draw_explosion(screen, position):
 
 
 def draw(screen, terrain, worms, objects, inventoryOpen, inventory, rangedWeapons, currentId):
+    
     screen.fill(GameParameters.BACKGROUNDCOLOR)
-	
-    for polygon in terrain.polygons:
-        if len(polygon) > 2:
-            pg.draw.polygon(screen, (rd.randrange(255), rd.randrange(255), rd.randrange(255)), polygon)
-            pg.draw.polygon(screen, (200, 150, 50), polygon)
+    screen.blit(PYGAMEBACKGROUNDIMAGE, (0,0))
             
     for s in terrain.surfaces:
-        pg.draw.line(screen, (250, 250, 250), s.p, s.q, width=3)
-        m, n = s.normalVectorSegmentMiddle()
-        pg.draw.line(screen, (250, 50, 50), m, n, width=1)
+        pg.draw.line(screen, (200, 200, 200), s.p, s.q, width=3)
+        # m, n = s.normalVectorSegmentMiddle()
+        # pg.draw.line(screen, (250, 50, 50), m, n, width=1)
 
     for w in worms:
         w.moveFree()
@@ -68,7 +68,9 @@ def draw(screen, terrain, worms, objects, inventoryOpen, inventory, rangedWeapon
 
 
 def mainloop(screen):
-
+    global BACKGROUNDIMAGE
+    global PYGAMEBACKGROUNDIMAGE
+    
     xmax, ymax = pg.display.get_surface().get_size()
     GameParameters.XMAX = xmax
     GameParameters.YMAX = ymax
@@ -91,6 +93,30 @@ def mainloop(screen):
     print(len(terrain.surfaces))
     print(len(terrain.polygons))
 	
+    BACKGROUNDIMAGE = Image.open('../img/terrain4.jpg')
+    BACKGROUNDIMAGE = BACKGROUNDIMAGE.resize((xmax, ymax))
+    # pg.transform.scale(BACKGROUNDIMAGE, (xmax, ymax))
+    
+    PYGAMEBACKGROUNDIMAGE = pg.Surface((xmax, ymax), pg.SRCALPHA)
+    for polygon in terrain.polygons:
+        if len(polygon) > 2:
+            # pg.draw.polygon(screen, (rd.randrange(255), rd.randrange(255), rd.randrange(255)), polygon)
+            # pg.draw.polygon(screen, (200, 150, 50), polygon)
+                
+            # creating the mask
+            mask = Image.new('RGBA', BACKGROUNDIMAGE.size)
+            d = ImageDraw.Draw(mask)
+            d.polygon(polygon, fill='#000')
+    
+            out = Image.new('RGBA', BACKGROUNDIMAGE.size)
+            out.paste(BACKGROUNDIMAGE, (0,0), mask)
+            image_data = out.tobytes()
+            image_dimensions = out.size
+            pygame_surface = pg.image.fromstring(image_data, image_dimensions, 'RGBA')
+            pygame_surface = pygame_surface.convert_alpha()
+            PYGAMEBACKGROUNDIMAGE.blit(pygame_surface, (0,0))
+    
+    
     state = GameState.INTERACTIVE
     worms = []
     objects = []

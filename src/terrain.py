@@ -122,7 +122,7 @@ class Terrain:
 				return {SurfaceTerrain(rightCoord, bottomCoord)}
 			case 14:
 				return {SurfaceTerrain(bottomCoord, leftCoord)}
-			case _: # case 0 and 15 : no terrain limitation (air square or full terrain square)
+			case _: # cases 0 and 15 : no terrain limitation (air square or full terrain square)
 				return {}
 	
 	def init_points_lists(self):
@@ -142,7 +142,6 @@ class Terrain:
 				current_list.append(s.q)
 				p = s.q
 			
-			# current_list.append(current_list[0])
 			points_lists.append(current_list)
 			current_list = []
 		

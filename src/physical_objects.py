@@ -107,6 +107,7 @@ class Worm(PhysicalSphere):
 
     def draw(self, screen):
         pg.draw.circle(screen, GameParameters.WORMCOLOR, (self.x, self.y), self.radius)
+        pg.draw.circle(screen, (10, 10, 10), (self.x, self.y), self.radius, width=2)
 
     import math
     import pygame as pg
