@@ -64,11 +64,7 @@ class Terrain:
 		x = topleftCoord[1]
 		size = self.square_size
 		thr = self.generation_threshold
-		
 		tl, tr, br, bl = cornersCoef
-		toprightCoord = (x, y+size)
-		bottomrightCoord = (x+size, y+size)
-		bottomleftCoord = (x+size, y)
 		
 		# check if each corner is inside or outside terrain
 		q = 0 # simulate a 4 bytes integer, each bit is flipped if the corner is inside terrain
@@ -78,6 +74,9 @@ class Terrain:
 		if bl >= thr: q += 1
 		
 		# simplest method : gives only straight and 45 degres slopes
+		#toprightCoord = (x, y+size)
+		#bottomrightCoord = (x+size, y+size)
+		#bottomleftCoord = (x+size, y)
 		#topCoord = middleCoord(topleftCoord, toprightCoord)
 		#rightCoord = middleCoord(bottomrightCoord, toprightCoord)
 		#bottomCoord = middleCoord(bottomrightCoord, bottomleftCoord)
