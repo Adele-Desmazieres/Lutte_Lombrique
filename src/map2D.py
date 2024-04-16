@@ -16,13 +16,14 @@ class Map2D:
 				l.append(rd.randrange(mincoef, maxcoef))
 			self.coefs.append(l)
 			
-		for i in range(10):
+		for i in range(8):
 			self.smoothOneTime()
 	
 	def smoothOneTime(self):
 		c = self.coefs
 		for j in range(len(c[0])):
 			for i in range(len(c)):
+				# smooth each square according to its neighbours
 				c1 = self.coefs[i-1][j-1] if self.checkInRange(i-1, j-1) else None
 				c2 = self.coefs[i-1][j] if self.checkInRange(i-1, j) else None
 				c3 = self.coefs[i-1][j+1] if self.checkInRange(i-1, j+1) else None
@@ -33,18 +34,15 @@ class Map2D:
 				c8 = self.coefs[i+1][j+1] if self.checkInRange(i+1, j+1) else None
 				l = [c1, c2, c3, c4, c5, c6, c7, c8]
 				nbcoefsup = len([x for x in l if x is not None and x > self.midcoef])
-				c[i][j] += (nbcoefsup - 3.6) * 5 # we can play with theses parameters
+				c[i][j] += (nbcoefsup - 3.6) * 3 # we can play with theses parameters
 				
-				# truncate between max and min coef
-				c[i][j] = max(min(c[i][j], self.maxcoef), self.mincoef)
-
+				# add a few mountains and cliffs
 				c[i][j] += math.sin(j / 3)
+				
+				# add noise
 				# c[i][j] += math.cos(i * j + 1)
 				
-				# truncate between max and min coef
-				c[i][j] = max(min(c[i][j], self.maxcoef), self.mincoef)
-
-				# more terrain on ground than sky
+				# add more terrain on ground and remove some terrain from the sky
 				nbr_zones = 5
 				zonesize = self.height / nbr_zones
 				groundseparation = 5

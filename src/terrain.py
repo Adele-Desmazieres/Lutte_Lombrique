@@ -60,23 +60,37 @@ class Terrain:
 	# output : la liste des lignes passant par ce carré
 	# algorithme de marching squares : https://jamie-wong.com/2014/08/19/metaballs-and-marching-squares/
 	def getLignes(self, cornersCoef, topleftCoord):
-		topleftCoef, toprightCoef, bottomrightCoef, bottomleftCoef = cornersCoef
-		toprightCoord = (topleftCoord[0], topleftCoord[1]+self.square_size)
-		bottomrightCoord = (topleftCoord[0]+self.square_size, topleftCoord[1]+self.square_size)
-		bottomleftCoord = (topleftCoord[0]+self.square_size, topleftCoord[1])
+		y = topleftCoord[0]
+		x = topleftCoord[1]
+		size = self.square_size
+		thr = self.generation_threshold
+		
+		tl, tr, br, bl = cornersCoef
+		toprightCoord = (x, y+size)
+		bottomrightCoord = (x+size, y+size)
+		bottomleftCoord = (x+size, y)
 		
 		# check if each corner is inside or outside terrain
 		q = 0 # simulate a 4 bytes integer, each bit is flipped if the corner is inside terrain
-		if topleftCoef >= self.generation_threshold: q += 8
-		if toprightCoef >= self.generation_threshold: q += 4
-		if bottomrightCoef >= self.generation_threshold: q += 2
-		if bottomleftCoef >= self.generation_threshold: q += 1
+		if tl >= thr: q += 8
+		if tr >= thr: q += 4
+		if br >= thr: q += 2
+		if bl >= thr: q += 1
 		
-		topCoord = middleCoord(topleftCoord, toprightCoord)
-		rightCoord = middleCoord(bottomrightCoord, toprightCoord)
-		bottomCoord = middleCoord(bottomrightCoord, bottomleftCoord)
-		leftCoord = middleCoord(topleftCoord, bottomleftCoord)
+		# simplest method : gives only straight and 45 degres slopes
+		#topCoord = middleCoord(topleftCoord, toprightCoord)
+		#rightCoord = middleCoord(bottomrightCoord, toprightCoord)
+		#bottomCoord = middleCoord(bottomrightCoord, bottomleftCoord)
+		#leftCoord = middleCoord(topleftCoord, bottomleftCoord)
 		
+		# linear interpolation to smooth the slopes
+		if q != 0 and q != 15:
+			topCoord = (y, x + size - size * ((thr-tr)/(tl-tr))) if (tl-tr) else (0, 0)
+			rightCoord = (y + size * ((thr-tr)/(br-tr)), x + size) if (br-tr) else (0, 0)
+			bottomCoord = (y + size, x + size - size * ((thr-br)/(bl-br))) if (bl-br) else (0, 0)
+			leftCoord = (y + size - size * ((thr-bl)/(tl-bl)), x) if (tl-bl) else (0, 0)
+		
+		# create the slopes of this square
 		match q:
 			case 1:
 				return {SurfaceTerrain(leftCoord, bottomCoord)}
