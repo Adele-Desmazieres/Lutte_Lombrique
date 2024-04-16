@@ -60,6 +60,9 @@ def draw(screen, terrain, worms, objects, inventoryOpen, inventory, rangedWeapon
 
 def mainloop(screen):
 
+    xmax, ymax = pg.display.get_surface().get_size()
+    GameParameters.XMAX = xmax
+    GameParameters.YMAX = ymax
     clock = pg.time.Clock()
     
     map = Map2D(100, 100, 0, 10).getCoefsFormatted()
@@ -88,9 +91,6 @@ def mainloop(screen):
     running = True
 
     while running:
-        xmax, ymax = pg.display.get_surface().get_size()
-        GameParameters.XMAX = xmax
-        GameParameters.YMAX = ymax
         events = pg.event.get()
         pressed = pg.key.get_pressed()
 
