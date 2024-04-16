@@ -2,6 +2,7 @@ import pygame as pg
 from physical_objects import *
 from game_parameters import *
 from terrain import *
+from map2D import *
 
 
 MAP1 = [[0, 0, 0, 0, 0, 0, 0] 
@@ -11,12 +12,19 @@ MAP1 = [[0, 0, 0, 0, 0, 0, 0]
 	  ,[0, 1, 1, 0, 1, 0, 0] 
 	  ,[0, 0, 0, 1, 0, 0, 1]
 	  ]
-
-MAP = [[MAP1[j][i] for j in range(len(MAP1))] for i in range(len(MAP1[0]))]
-
+# inverse la map
+MAP = [[MAP1[i][j] for i in range(len(MAP1))] for j in range(len(MAP1[0]))]
+# ajoute des 0 autour de la map
+MAP1 = [[0] + MAP[i] + [0] for i in range(len(MAP))]
+MAP = [[0] * len(MAP1[0])] + MAP1 + [[0] * len(MAP1[0])]
+# print(MAP)
 
 def draw(screen, terrain, objects):
 	screen.fill(GameParameters.BACKGROUNDCOLOR)
+	
+	# for i in range(len(MAP)-1):
+	# 	for j in range(len(MAP[i])-1):
+	# 		pg.draw.circle(screen, (50, 150, 50), (i*terrain.square_size, j*terrain.square_size), 3)
 	
 	for s in terrain.surfaces:
 		pg.draw.line(screen, (250, 250, 250), s.p, s.q, width=3)
@@ -36,7 +44,16 @@ def draw(screen, terrain, objects):
 def mainloop(screen):
 	clock = pg.time.Clock()
 	
-	terrain = Terrain(MAP)
+	xmax, ymax = pg.display.get_surface().get_size()
+	GameParameters.XMAX = xmax
+	GameParameters.YMAX = ymax
+	
+	map = Map2D(100, 100, 0, 10).getCoefsFormatted()
+	generation_threshold = 5
+	
+	square_size = min(GameParameters.YMAX/(len(map[0])-1), GameParameters.XMAX/(len(map)-1))
+	
+	terrain = Terrain(map, square_size, generation_threshold)
 	
 	# w1 = Worm(50, 50)
 	# w1.deplacementVec.vx = 30
@@ -48,9 +65,6 @@ def mainloop(screen):
 	running = True
 	
 	while running:
-		xmax, ymax = pg.display.get_surface().get_size()
-		GameParameters.XMAX = xmax
-		GameParameters.YMAX = ymax
 		events = pg.event.get()
 		
 		# stops the program when closing

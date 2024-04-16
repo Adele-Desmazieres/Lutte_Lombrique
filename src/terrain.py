@@ -43,15 +43,14 @@ class SurfaceTerrain: # le terrain est sous la ligne définie par le point p à 
 
 class Terrain:
 	
-	generation_threshold = 0.5 # the threshold above which terrain will be placed
-	case_size = 50 # number of pixels in a case
-	
-	def __init__(self, map):
+	def __init__(self, map, square_size, generation_threshold):
+		self.generation_threshold = generation_threshold # the threshold above which terrain will be placed
+		self.square_size = square_size # number of pixels in a square side
 		terrainSurfaces = set()
 		for i in range(len(map)-1):
 			for j in range(len(map[i])-1):
 				coefs = (map[i][j], map[i][j+1], map[i+1][j+1], map[i+1][j])
-				surfaces = self.getLignes(coefs, (i*self.case_size, j*self.case_size))
+				surfaces = self.getLignes(coefs, (i*self.square_size, j*self.square_size))
 				terrainSurfaces = terrainSurfaces.union(surfaces)
 		self.surfaces = terrainSurfaces
 		# print(self.surfaces)
@@ -62,12 +61,12 @@ class Terrain:
 	# algorithme de marching squares : https://jamie-wong.com/2014/08/19/metaballs-and-marching-squares/
 	def getLignes(self, cornersCoef, topleftCoord):
 		topleftCoef, toprightCoef, bottomrightCoef, bottomleftCoef = cornersCoef
-		toprightCoord = (topleftCoord[0], topleftCoord[1]+self.case_size)
-		bottomrightCoord = (topleftCoord[0]+self.case_size, topleftCoord[1]+self.case_size)
-		bottomleftCoord = (topleftCoord[0]+self.case_size, topleftCoord[1])
+		toprightCoord = (topleftCoord[0], topleftCoord[1]+self.square_size)
+		bottomrightCoord = (topleftCoord[0]+self.square_size, topleftCoord[1]+self.square_size)
+		bottomleftCoord = (topleftCoord[0]+self.square_size, topleftCoord[1])
 		
 		# check if each corner is inside or outside terrain
-		q = 0 # simulate a 4 bytes integer
+		q = 0 # simulate a 4 bytes integer, each bit is flipped if the corner is inside terrain
 		if topleftCoef >= self.generation_threshold: q += 8
 		if toprightCoef >= self.generation_threshold: q += 4
 		if bottomrightCoef >= self.generation_threshold: q += 2
@@ -107,7 +106,7 @@ class Terrain:
 				return {SurfaceTerrain(rightCoord, bottomCoord)}
 			case 14:
 				return {SurfaceTerrain(bottomCoord, leftCoord)}
-			case _:
+			case _: # case 0 and 15 : no terrain limitation (air square or full terrain square)
 				return {}
 
 
