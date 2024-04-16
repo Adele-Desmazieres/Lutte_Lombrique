@@ -152,7 +152,7 @@ class Inventory:
     def __init__(self):
         self.selectedItem = 0
         self.items = [Item.PneumaticDrill, Item.Grenade]
-        self.sprites = pg.image.load("worms.png")
+        self.sprites = pg.image.load("../img/weapons.png")
 
     def changeSelectedItem(self):
         self.selectedItem = (self.selectedItem + 1) % len(self.items)

@@ -1,9 +1,13 @@
+
+
 import pygame as pg
 import random
+import os
 from physical_objects import *
 from game_parameters import *
 from terrain import *
 from map2D import *
+
 
 
 COLORS = [(255, 69, 0), (255, 150, 0), (255, 215, 0)]
@@ -95,10 +99,11 @@ def mainloop(screen):
         pressed = pg.key.get_pressed()
 
         if state == GameState.INTERACTIVE:
-            # stops the program when closing
             for event in events:
+                # stops the program when closing
                 if event.type == pg.QUIT:
                     running = False
+                    
                 if event.type == pg.KEYDOWN:
                     if currentState == State.Moving:
                         if event.key == pg.K_SPACE:
@@ -108,6 +113,7 @@ def mainloop(screen):
                     else:
                         if event.key == pg.K_RSHIFT:
                             inventory.changeSelectedItem()
+                            
                 if event.type == pg.KEYUP and currentState == State.InventoryOpen:
                     if event.key == pg.K_SPACE:
                         inventory.triggerCurrentItem(worms[currentId], objects)
@@ -119,6 +125,7 @@ def mainloop(screen):
                     worms[currentId].moveLeft()
                 elif pressed[pg.K_d]:
                     worms[currentId].moveRight()
+                    
             elif inventory.currentItem() in rangedWeapons:
                 if pressed[pg.K_q]:
                     worms[currentId].aimLeft()
@@ -138,7 +145,7 @@ def mainloop(screen):
         for obj in objects:
             if isinstance(obj, Grenade):
                 if pg.time.get_ticks() - obj.creation_tick > 5000:
-                    # todo : boom animation + appliquer dégâts au terrain
+                    # TODO: boom animation + appliquer dégâts au terrain
                     draw_explosion(screen, (obj.x, obj.y))
                     obj.explode(worms)
                     state = GameState.INTERACTIVE
@@ -151,7 +158,8 @@ def mainloop(screen):
         if len(worms) <= 1:
             print("Fin de la partie")
             break
-        # todo: si plus qu'un seul wormms, lui attribué la victoire?
+        
+        # TODO: si plus qu'un seul wormms, lui attribuer la victoire
 
         draw(screen, terrain, worms, objects, currentState == State.InventoryOpen, inventory, rangedWeapons, currentId)
 
@@ -184,5 +192,10 @@ def screenInit():
 
 
 if __name__ == "__main__":
+    # the script runs in its own directory instead of the location where it was launched
+    abspath = os.path.abspath(__file__)
+    dname = os.path.dirname(abspath)
+    os.chdir(dname)
+
     screen = screenInit()
     mainloop(screen)
