@@ -1,4 +1,5 @@
 import random as rd
+import math
 
 class Map2D:
 	
@@ -9,9 +10,9 @@ class Map2D:
 		self.maxcoef = maxcoef
 		self.midcoef = (mincoef+maxcoef) / 2
 		self.coefs = []
-		for i in range(width):
+		for i in range(height):
 			l = []
-			for j in range(height):
+			for j in range(width):
 				l.append(rd.randrange(mincoef, maxcoef))
 			self.coefs.append(l)
 			
@@ -32,12 +33,26 @@ class Map2D:
 				c8 = self.coefs[i+1][j+1] if self.checkInRange(i+1, j+1) else None
 				l = [c1, c2, c3, c4, c5, c6, c7, c8]
 				nbcoefsup = len([x for x in l if x is not None and x > self.midcoef])
-				# if nbcoefsup > 4:
-				# 	c[i][j] = min(c[i][j] + 8, self.maxcoef)
-				# elif nbcoefsup < 4:
-				# 	c[i][j] = max(c[i][j] - 8, self.mincoef)
-				c[i][j] += (nbcoefsup - 3.6) * 10 # we can play with theses parameters
+				c[i][j] += (nbcoefsup - 3.6) * 5 # we can play with theses parameters
+				
+				# truncate between max and min coef
 				c[i][j] = max(min(c[i][j], self.maxcoef), self.mincoef)
+
+				c[i][j] += math.sin(j / 3)
+				# c[i][j] += math.cos(i * j + 1)
+				
+				# truncate between max and min coef
+				c[i][j] = max(min(c[i][j], self.maxcoef), self.mincoef)
+
+				# more terrain on ground than sky
+				nbr_zones = 5
+				zonesize = self.height / nbr_zones
+				groundseparation = 5
+				c[i][j] += ((i//zonesize) * groundseparation / (self.height//zonesize)) - (groundseparation/2)
+
+				# truncate between max and min coef
+				c[i][j] = max(min(c[i][j], self.maxcoef), self.mincoef)
+				
 		self.coefs = c
 		# TODO : test this
 	
@@ -56,6 +71,3 @@ class Map2D:
 	def __str__(self):
 		return self.coefs.__str__()
 
-
-# m = Map2D(100, 100, 0, 10)
-# print(m.getCoefsFormatted())

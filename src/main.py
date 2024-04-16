@@ -69,7 +69,7 @@ def mainloop(screen):
     GameParameters.YMAX = ymax
     clock = pg.time.Clock()
     
-    map = Map2D(100, 100, 0, 10).getCoefsFormatted()
+    map = Map2D(90, 60, 0, 10).getCoefsFormatted()
     generation_threshold = 5
     square_size = min(GameParameters.YMAX/(len(map[0])-1), GameParameters.XMAX/(len(map)-1))
     terrain = Terrain(map, square_size, generation_threshold)
