@@ -26,7 +26,7 @@ class Model:
         self.rangedWeapons = None
         
         self.inventory = None
-        self.inventoryOpenState = None
+        self.inventoryState = None
         
         self.clock = None
         self.state = None
@@ -51,3 +51,5 @@ class Model:
     def initTerrain(self):
         self.terrain = Terrain(self.map, self.square_size, self.generation_threshold)
     
+    def hasInventoryOpened(self):
+        return (self.inventoryState == InventoryState.Opened)
