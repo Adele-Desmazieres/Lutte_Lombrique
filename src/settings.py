@@ -1,4 +1,5 @@
-class GameParameters:
+class Settings:
+	
 	GRAVITY = 0.1
 	FRICTION = 0.999 # more like fluidity, used to multiply a vector by this to slow it down
 	BOUNCINGABSORPTION = 0.6
@@ -11,3 +12,4 @@ class GameParameters:
 	NUMBEROFPLAYERS = 2
 	NUMBERMILLISECONDSTURN = 30000
 	JUMPPOWER = 4
+

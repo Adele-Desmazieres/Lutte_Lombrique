@@ -9,7 +9,7 @@ class Item(Enum):
 
 
 # class WeaponType(Enum):
-#	LAUNCHED = 0
+#	Launched = 0
 #	Melee = 1
 #	Thrown = 2
 
@@ -30,9 +30,6 @@ class PneumaticDrill(Utility):
 class Weapon:
     def __init__(self, damage):
         self.damage = damage
-
-    def shot(self, power):
-        print("pan pan")
 
 
 class Grenade(Weapon, PhysicalSphere):

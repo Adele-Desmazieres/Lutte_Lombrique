@@ -1,9 +1,9 @@
-from game_parameters import *
+from settings import *
 from geometry import *
 
 
 class PhysicalSphere:
-    gravityVector = Vector(0, GameParameters.GRAVITY)
+    gravityVector = Vector(0, Settings.GRAVITY)
     bouncingAbsorption = 0.6
 
     def __init__(self, x, y, radius):
@@ -21,14 +21,14 @@ class PhysicalSphere:
 
     def handleCollision(self):
         stuckGround = False
-        if (self.x + self.radius + self.deplacementVec.vx > GameParameters.XMAX) or (
-                self.x - self.radius + self.deplacementVec.vx < GameParameters.XMIN):
+        if (self.x + self.radius + self.deplacementVec.vx > Settings.XMAX) or (
+                self.x - self.radius + self.deplacementVec.vx < Settings.XMIN):
             self.deplacementVec.vx = -self.deplacementVec.vx * self.bouncingAbsorption
             self.deplacementVec.vy *= self.bouncingAbsorption
 
-        if (self.y + self.radius + self.deplacementVec.vy > GameParameters.YMAX) or (
-                self.y - self.radius + self.deplacementVec.vy < GameParameters.YMIN):
-            if (self.y + self.radius + self.deplacementVec.vy > GameParameters.YMAX) and (self.deplacementVec.vy < 2):
+        if (self.y + self.radius + self.deplacementVec.vy > Settings.YMAX) or (
+                self.y - self.radius + self.deplacementVec.vy < Settings.YMIN):
+            if (self.y + self.radius + self.deplacementVec.vy > Settings.YMAX) and (self.deplacementVec.vy < 2):
                 stuckGround = True
             self.deplacementVec.vx *= self.bouncingAbsorption
             self.deplacementVec.vy = -self.deplacementVec.vy * self.bouncingAbsorption

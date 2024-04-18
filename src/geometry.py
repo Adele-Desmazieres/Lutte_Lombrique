@@ -1,15 +1,4 @@
 
-
-class Point:
-	
-	def __init__(self, x, y):
-		self.x = x
-		self.y = y
-	
-	def middle(p, q):
-		return Point((p.x + q.x) / 2, (p.y + q.y) / 2)
-
-
 class Vector:
 
     def __init__(self, vx, vy):

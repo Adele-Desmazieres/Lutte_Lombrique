@@ -2,7 +2,7 @@ import math
 import pygame as pg
 from enum import Enum
 from physical_sphere import *
-from game_parameters import *
+from settings import *
 
 class WormState(Enum):
     GROUNDED = 0
@@ -34,7 +34,7 @@ class Worm(PhysicalSphere):
 
     def jump(self):
         if self.state == WormState.GROUNDED:
-            self.deplacementVec.vy = GameParameters.JUMPPOWER
+            self.deplacementVec.vy = Settings.JUMPPOWER
             self.state = WormState.AIRBORNE
 
     def aimLeft(self):
@@ -50,7 +50,7 @@ class Worm(PhysicalSphere):
             self.powerCharge += 2
 
     def draw(self, screen):
-        pg.draw.circle(screen, GameParameters.WORMCOLOR, (self.x, self.y), self.radius)
+        pg.draw.circle(screen, Settings.WORMCOLOR, (self.x, self.y), self.radius)
         pg.draw.circle(screen, (10, 10, 10), (self.x, self.y), self.radius, width=2)
 
     def draw_aiming_cursor(self, screen):

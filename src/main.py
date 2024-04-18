@@ -1,18 +1,17 @@
 #!/usr/bin/python3
 
 import pygame as pg
-import random as rd
 import os
 from PIL import Image, ImageDraw
-from game_parameters import *
+from settings import *
 from terrain import *
 from worm import *
 from map2D import *
 from weapon import *
 from inventory import *
+from explosion import *
 
 
-COLORS = [(255, 69, 0), (255, 150, 0), (255, 215, 0)]
 BACKGROUNDIMAGE = None
 PYGAMEBACKGROUNDIMAGE = None
 
@@ -26,25 +25,10 @@ class State(Enum):
     InventoryOpen = 1
 
 
-def draw_explosion(screen, position):
-    max_radius = 60
-    num_circles = 10
-    clock = pg.time.Clock()
-
-    pg.draw.circle(screen, rd.choice(COLORS), position, max_radius)
-
-    for i in range(num_circles):
-        radius = rd.randint(5, max_radius)
-        color = rd.choice(COLORS)
-        pg.draw.circle(screen, color, position, radius)
-        max_radius -= 5
-        clock.tick(40)
-        pg.display.flip() # TODO : pas très propre ? à changer ?
-
 
 def draw(screen, terrain, worms, objects, inventoryOpen, inventory, rangedWeapons, currentId):
     
-    screen.fill(GameParameters.BACKGROUNDCOLOR)
+    screen.fill(Settings.BACKGROUNDCOLOR)
     screen.blit(PYGAMEBACKGROUNDIMAGE, (0,0))
             
     for s in terrain.surfaces:
@@ -74,8 +58,8 @@ def mainloop(screen):
     global PYGAMEBACKGROUNDIMAGE
     
     xmax, ymax = pg.display.get_surface().get_size()
-    GameParameters.XMAX = xmax
-    GameParameters.YMAX = ymax
+    Settings.XMAX = xmax
+    Settings.YMAX = ymax
     clock = pg.time.Clock()
     
     # map = [[0, 0, 0, 0, 0, 0, 0], 
@@ -89,7 +73,7 @@ def mainloop(screen):
     
     map = Map2D(90, 60, 0, 10).getCoefsFormatted()
     generation_threshold = 5
-    square_size = min(GameParameters.YMAX/(len(map[0])-1), GameParameters.XMAX/(len(map)-1))
+    square_size = min(Settings.YMAX/(len(map[0])-1), Settings.XMAX/(len(map)-1))
     
     terrain = Terrain(map, square_size, generation_threshold)
     print(len(terrain.surfaces))
@@ -125,9 +109,9 @@ def mainloop(screen):
     rangedWeapons = [Item.Grenade]
     inventory = Inventory()
     
-    if GameParameters.NUMBEROFPLAYERS < 2:
+    if Settings.NUMBEROFPLAYERS < 2:
         exit()
-    for i in range(GameParameters.NUMBEROFPLAYERS):
+    for i in range(Settings.NUMBEROFPLAYERS):
         w = Worm((i + 1) * 50, ymax - Worm.radius - 1)
         #w.deplacementVec.vx = 20
         worms.append(w)
@@ -191,7 +175,7 @@ def mainloop(screen):
             if isinstance(obj, Grenade):
                 if pg.time.get_ticks() - obj.creation_tick > 5000:
                     # TODO: boom animation + appliquer dégâts au terrain
-                    draw_explosion(screen, (obj.x, obj.y))
+                    Explosion.draw_explosion(screen, (obj.x, obj.y))
                     obj.explode(worms)
                     state = GameState.INTERACTIVE
                     objects.remove(obj)
@@ -210,7 +194,7 @@ def mainloop(screen):
 
         clock.tick(40)
         turnClock += 40
-        if (turnClock >= GameParameters.NUMBERMILLISECONDSTURN) or hasFired:
+        if (turnClock >= Settings.NUMBERMILLISECONDSTURN) or hasFired:
             worms[currentId].powerCharge = 0
             worms[currentId].aimAngle = -90
             currentId = (currentId + 1) % len(worms)
@@ -230,7 +214,7 @@ def screenInit():
 
     pg.init()
     screen = pg.display.set_mode((900, 600), pg.RESIZABLE)
-    screen.fill(GameParameters.BACKGROUNDCOLOR)
+    screen.fill(Settings.BACKGROUNDCOLOR)
     pg.display.flip()
 
     return screen
