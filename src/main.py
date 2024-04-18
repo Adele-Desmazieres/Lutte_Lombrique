@@ -32,7 +32,8 @@ def initGameValues(game):
     
     if Settings.NUMBEROFPLAYERS < 2:
         exit()
-        
+    
+    # TODO : plusieurs worms appartenant à un joueur et gerer le chgt de tour
     for i in range(Settings.NUMBEROFPLAYERS):
         w = Worm((i + 1) * 50, Settings.YMAX - Worm.radius - 1)
         game.worms.append(w)
@@ -93,11 +94,12 @@ def mainloop(game, view):
 
         for i in range(len(game.worms)):
             game.worms[i].refreshState()
-
+        
+        # TODO : sortir ca du main si possible
         for obj in game.objects:
             if isinstance(obj, Grenade):
                 if pg.time.get_ticks() - obj.creation_tick > 5000:
-                    # TODO: boom animation + appliquer dégâts au terrain
+                    # TODO: boom animation + appliquer dégâts au terrain + force répulsion worms
                     Explosion.draw_explosion(screen, (obj.x, obj.y))
                     obj.explode(game.worms)
                     game.objects.remove(obj)
@@ -132,21 +134,15 @@ def mainloop(game, view):
 
 
 def screenInit():
-    
-    pg.init()
     screen = pg.display.set_mode((Settings.XMAX, Settings.YMAX), pg.RESIZABLE)
     screen.fill(Settings.BACKGROUNDCOLOR)
     pg.display.flip()
-    
-    # xmax, ymax = pg.display.get_surface().get_size()
-    # Settings.XMAX = xmax
-    # Settings.YMAX = ymax
-    
     return screen
 
 
 if __name__ == "__main__":
     print("\nProgram initialisation...")
+    pg.init()
     
     # the script runs in its own directory instead of the location where it was launched
     abspath = os.path.abspath(__file__)
