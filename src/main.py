@@ -3,11 +3,13 @@
 import pygame as pg
 import random as rd
 import os
-from physical_objects import *
+from PIL import Image, ImageDraw
 from game_parameters import *
 from terrain import *
+from worm import *
 from map2D import *
-from PIL import Image, ImageDraw
+from weapon import *
+from inventory import *
 
 
 COLORS = [(255, 69, 0), (255, 150, 0), (255, 215, 0)]

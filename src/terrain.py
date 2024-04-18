@@ -1,17 +1,6 @@
-import math as ma
-from physical_objects import * 
-# TODO mettre Vector et Point dans un fichier de geometrie
+import math
+from physical_sphere import * 
 
-
-class Point:
-	
-	def __init__(self, x, y):
-		self.x = x
-		self.y = y
-	
-	def middle(p, q):
-		return Point((p.x + q.x) / 2, (p.y + q.y) / 2)
-	
 
 class SurfaceTerrain: # le terrain est sous la ligne définie par le point p à gauche et le point q à droite
 	
@@ -29,7 +18,7 @@ class SurfaceTerrain: # le terrain est sous la ligne définie par le point p à 
 	# 	return (a, b)
 	
 	def length(self):
-		return ma.sqrt((self.q.y - self.p.y)**2 + (self.q.x - self.p.x)**2)
+		return math.sqrt((self.q.y - self.p.y)**2 + (self.q.x - self.p.x)**2)
 	
 	def normalVector(self):
 		v = Vector(-self.vec.vy, self.vec.vx)
