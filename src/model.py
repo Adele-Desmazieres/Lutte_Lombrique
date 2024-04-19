@@ -2,6 +2,8 @@ from enum import Enum
 from map2D import *
 from terrain import *
 from settings import *
+from inventory import *
+from worm import *
 
 class GameState(Enum):
     INTERACTIVE = 1
@@ -13,26 +15,32 @@ class InventoryState(Enum):
 
 class Model:
     
-    def __init__(self):
+    def __init__(self, clock):
         self.map = None
         self.generation_threshold = None
         self.square_size = None
         self.terrain = None
         
-        self.worms = None
-        self.current_worm_id = None
-        self.worm_has_fired = None
-        self.objects = None
-        self.rangedWeapons = None
+        self.worms = []
+        self.current_worm_id = 0
+        self.worm_has_fired = False
+        self.objects = []
+        self.rangedWeapons = [Item.Grenade]
         
-        self.inventory = None
-        self.inventoryState = None
+        self.inventory = Inventory()
+        self.inventoryState = InventoryState.Closed
         
-        self.clock = None
-        self.state = None
-        self.turnTimer = None
+        self.clock = clock
+        self.state = GameState.INTERACTIVE
+        self.turnTimer = 0
         
-        # self.currentState = None
+        self.initMap() # also initialize generation_threshold and square_size
+        self.initTerrain()
+    
+        # TODO : plusieurs worms appartenant à un joueur et gerer le chgt de tour
+        for i in range(Settings.NUMBEROFPLAYERS):
+            w = Worm((i + 1) * 50, Settings.YMAX - Worm.radius - 1)
+            self.worms.append(w)
     
     def initMap(self):
         # map = [[0, 0, 0, 0, 0, 0, 0], 

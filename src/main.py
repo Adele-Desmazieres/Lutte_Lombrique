@@ -13,32 +13,6 @@ from model import *
 from view import *
 
 
-def initGameValues(game):
-    game.initMap() # also initialize generation_threshold and square_size
-    game.initTerrain()
-    
-    game.worms = []
-    game.current_worm_id = 0
-    game.worm_has_fired = False
-    game.objects = []
-    game.rangedWeapons = [Item.Grenade]
-    
-    game.inventory = Inventory()
-    game.inventoryState = InventoryState.Closed
-    
-    game.clock = pg.time.Clock()
-    game.state = GameState.INTERACTIVE
-    game.turnTimer = 0
-    
-    if Settings.NUMBEROFPLAYERS < 2:
-        exit()
-    
-    # TODO : plusieurs worms appartenant à un joueur et gerer le chgt de tour
-    for i in range(Settings.NUMBEROFPLAYERS):
-        w = Worm((i + 1) * 50, Settings.YMAX - Worm.radius - 1)
-        game.worms.append(w)
-
-
 def mainloop(game, view):
     
     running = True
@@ -150,10 +124,11 @@ if __name__ == "__main__":
     os.chdir(dname)
     
     # connects together model-view-controller
-    game = Model()
-    initGameValues(game)
-    
+    game = Model(pg.time.Clock())
     screen = screenInit()
     view = View(screen, game)
+    
+    if Settings.NUMBEROFPLAYERS < 2:
+        exit()
     
     mainloop(game, view)
