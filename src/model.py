@@ -66,3 +66,6 @@ class Model:
     
     def hasInventoryOpened(self):
         return (self.inventoryState == InventoryState.Opened)
+    
+    def getCurrentWorm(self):
+        return self.worms[self.current_worm_id]

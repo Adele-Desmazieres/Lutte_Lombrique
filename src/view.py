@@ -63,6 +63,7 @@ class View:
     
         if (game.hasInventoryOpened()):
             game.inventory.draw(screen)
+            game.getCurrentWorm().draw_line_of_sight(screen)
     
         if game.inventory.currentItem() in game.rangedWeapons:
             game.worms[game.current_worm_id].draw_aiming_cursor(screen)

@@ -1,5 +1,6 @@
 import math
 import pygame as pg
+import numpy as np
 from enum import Enum
 from physical_sphere import *
 from settings import *
@@ -46,7 +47,7 @@ class Worm(PhysicalSphere):
             self.aimAngle += 1
 
     def charge(self):
-        if self.powerCharge < 100:
+        if self.powerCharge < Settings.MAX_POWER_CHARGE:
             self.powerCharge += 2
 
     def draw(self, screen):
@@ -55,9 +56,9 @@ class Worm(PhysicalSphere):
 
     def draw_aiming_cursor(self, screen):
         if self.powerCharge <= 0:
-            return
+            return None
 
-        color = (255, 255, 255)
+        color = (250, 100, 10)
 
         end_x = self.x + math.cos(math.radians(self.aimAngle)) * self.powerCharge
         end_y = self.y + math.sin(math.radians(self.aimAngle)) * self.powerCharge
@@ -74,9 +75,40 @@ class Worm(PhysicalSphere):
 
         end_left = (end_x - dx * end_thickness / 2, end_y - dy * end_thickness / 2)
         end_right = (end_x + dx * end_thickness / 2, end_y + dy * end_thickness / 2)
+        
+        pg.draw.polygon(screen, color, [start_left, start_right, end_right, end_left])
+    
+    def draw_line_of_sight(self, screen):
+        # deltax = math.cos(math.radians(self.aimAngle%360)) * (Settings.MAX_POWER_CHARGE-1)
+        # deltay = math.sin(math.radians(self.aimAngle%360)) * (Settings.MAX_POWER_CHARGE-1)
+        
+        # endx = self.x + deltax
+        # endy = self.y + deltay
+        
+        # pg.draw.line(screen, color=pg.Color('red'), start_pos=(self.x, self.y), end_pos=(endx, endy), width=2)
+        
+        color = (200, 200, 200, 0.5)
 
+        end_x = self.x + math.cos(math.radians(self.aimAngle)) * Settings.MAX_POWER_CHARGE
+        end_y = self.y + math.sin(math.radians(self.aimAngle)) * Settings.MAX_POWER_CHARGE
+
+        start_thickness = 1
+        end_thickness = 10
+
+        perpendicular_angle = math.radians(self.aimAngle + 90)
+        dx = math.cos(perpendicular_angle)
+        dy = math.sin(perpendicular_angle)
+
+        start_left = (self.x - dx * start_thickness / 2, self.y - dy * start_thickness / 2)
+        start_right = (self.x + dx * start_thickness / 2, self.y + dy * start_thickness / 2)
+
+        end_left = (end_x - dx * end_thickness / 2, end_y - dy * end_thickness / 2)
+        end_right = (end_x + dx * end_thickness / 2, end_y + dy * end_thickness / 2)
+        
+        s = pg.Surface((1000,750))
         pg.draw.polygon(screen, color, [start_left, start_right, end_right, end_left])
 
+    
     def refreshState(self):
         pass
         # if True:  # TODO : si on touche le sol, collision avec le terrain

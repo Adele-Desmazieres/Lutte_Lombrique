@@ -38,7 +38,7 @@ class Grenade(Weapon, PhysicalSphere):
     bouncingAbsorption = 0.6
     explosionRadius = 60
     projection_force_max = 18
-    projection_force_min = 8
+    projection_force_min = 12
 
     def __init__(self, x, y, angle, power):
         Weapon.__init__(self, 50)
