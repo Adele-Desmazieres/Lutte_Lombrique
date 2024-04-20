@@ -78,8 +78,13 @@ class Worm(PhysicalSphere):
         pg.draw.polygon(screen, color, [start_left, start_right, end_right, end_left])
 
     def refreshState(self):
-        if True:  # TODO : si on touche le sol, collision avec le terrain
-            self.state = WormState.GROUNDED
-        else:
-            self.state = WormState.AIRBORNE
+        pass
+        # if True:  # TODO : si on touche le sol, collision avec le terrain
+        #     self.state = WormState.GROUNDED
+        # else:
+        #     self.state = WormState.AIRBORNE
+    
+    def ejected(self, vec):
+        self.deplacementVec = vec
+        self.state = WormState.AIRBORNE
 

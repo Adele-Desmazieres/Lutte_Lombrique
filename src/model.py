@@ -16,6 +16,8 @@ class InventoryState(Enum):
 class Model:
     
     def __init__(self, clock):
+        self.view = None
+        
         self.map = None
         self.generation_threshold = None
         self.square_size = None
@@ -41,6 +43,9 @@ class Model:
         for i in range(Settings.NUMBEROFPLAYERS):
             w = Worm((i + 1) * 50, Settings.YMAX - Worm.radius - 1)
             self.worms.append(w)
+    
+    def setView(self, view):
+        self.view = view
     
     def initMap(self):
         # map = [[0, 0, 0, 0, 0, 0, 0], 

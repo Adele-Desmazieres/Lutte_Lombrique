@@ -75,7 +75,7 @@ def mainloop(game, view):
                 if pg.time.get_ticks() - obj.creation_tick > 5000:
                     # TODO: boom animation + appliquer dégâts au terrain + force répulsion worms
                     Explosion.draw_explosion(screen, (obj.x, obj.y))
-                    obj.explode(game.worms)
+                    obj.explode(game)
                     game.objects.remove(obj)
                     game.state = GameState.INTERACTIVE
 
@@ -127,6 +127,7 @@ if __name__ == "__main__":
     game = Model(pg.time.Clock())
     screen = screenInit()
     view = View(screen, game)
+    game.setView(view)
     
     if Settings.NUMBEROFPLAYERS < 2:
         exit()
