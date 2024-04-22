@@ -33,6 +33,8 @@ class PhysicalSphere:
             self.deplacementVec.vx *= self.bouncingAbsorption
             self.deplacementVec.vy = -self.deplacementVec.vy * self.bouncingAbsorption
 
+        # TODO : gérer collisions avec le terrain
+
         # colle l'objet au sol
         if stuckGround:
             self.deplacementVec.vx = 0

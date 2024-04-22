@@ -21,7 +21,7 @@ def initGameValues(game):
     game.current_worm_id = 0
     game.worm_has_fired = False
     game.objects = []
-    game.rangedWeapons = [Item.Grenade]
+    game.rangedWeapons = [Item.Grenade, Item.Bazooka]
     
     game.inventory = Inventory()
     game.inventoryState = InventoryState.Closed
@@ -100,6 +100,12 @@ def mainloop(game, view):
             if isinstance(obj, Grenade):
                 if pg.time.get_ticks() - obj.creation_tick > 5000:
                     # TODO: boom animation + appliquer dégâts au terrain + force répulsion worms
+                    Explosion.draw_explosion(screen, (obj.x, obj.y))
+                    obj.explode(game.worms)
+                    game.objects.remove(obj)
+                    game.state = GameState.INTERACTIVE
+            if isinstance(obj, Bazooka):
+                if obj.collisionDetected: # TODO : if collision
                     Explosion.draw_explosion(screen, (obj.x, obj.y))
                     obj.explode(game.worms)
                     game.objects.remove(obj)
