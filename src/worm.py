@@ -50,9 +50,16 @@ class Worm(PhysicalSphere):
         if self.powerCharge < Settings.MAX_POWER_CHARGE:
             self.powerCharge += 2
 
-    def draw(self, screen):
+    def draw(self, screen, view):
+        # affiche le cercle du worm
         pg.draw.circle(screen, Settings.WORMCOLOR, (self.x, self.y), self.radius)
         pg.draw.circle(screen, (10, 10, 10), (self.x, self.y), self.radius, width=2)
+        
+        # affiche les points de vie des worms
+        text = view.font_small.render(str(self.hp), True, pg.Color("white"))
+        textRect = text.get_rect() # create a rectangular object for the text surface object
+        textRect.center = (self.x, self.y - self.radius*1.5) # set the center of the rectangular object
+        screen.blit(text, textRect)
 
     def draw_aiming_cursor(self, screen):
         if self.powerCharge <= 0:

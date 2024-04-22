@@ -3,8 +3,6 @@ class Settings:
 	GRAVITY = 0.18
 	FRICTION = 0.999 # more like fluidity, used to multiply a vector by this to slow it down
 	BOUNCINGABSORPTION = 0.6
-	BACKGROUNDCOLOR = (30, 30, 100)
-	WORMCOLOR = (230, 143, 124)
 	MAX_POWER_CHARGE = 100
 	
 	XMIN = 0
@@ -16,6 +14,11 @@ class Settings:
 	MAP_THRESHOLD = 5 # seuil entre le terrain si coef supérieur, et l'air si coef inférieur
 	
 	TERRAIN_IMG_PATH = '../img/terrain4.jpg'
+	BACKGROUNDCOLOR = (30, 30, 100)
+	WORMCOLOR = (230, 143, 124)
+	FONTNAME = "freesansbold.ttf"
+	FONTSIZEBIG = 20
+	FONTSIZESMALL = 10
 	
 	NUMBEROFPLAYERS = 2
 	NUMBERMILLISECONDSTURN = 30000

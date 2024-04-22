@@ -6,6 +6,8 @@ class View:
     
     def __init__(self, screen, game):
         self.screen = screen
+        self.font_big = pg.font.Font(Settings.FONTNAME, Settings.FONTSIZEBIG)
+        self.font_small = pg.font.Font(Settings.FONTNAME, Settings.FONTSIZESMALL)
         
         self.terrain_img = Image.open(Settings.TERRAIN_IMG_PATH)
         self.terrain_img = self.terrain_img.resize((Settings.XMAX, Settings.YMAX))
@@ -51,11 +53,11 @@ class View:
         screen.blit(self.pg_terrain_img, (0,0))
     
         for s in game.terrain.surfaces:
-            pg.draw.line(screen, (200, 200, 200), s.p, s.q, width=3)
+            pg.draw.line(screen, (00, 00, 00), s.p, s.q, width=2)
     
         for w in game.worms:
             w.moveFree()
-            w.draw(screen)
+            w.draw(screen, self)
     
         for o in game.objects:
             o.moveFree()

@@ -109,6 +109,7 @@ def mainloop(game, view):
 
 def screenInit():
     screen = pg.display.set_mode((Settings.XMAX, Settings.YMAX), pg.RESIZABLE)
+    pg.display.set_caption("Lutte Lombrique")
     screen.fill(Settings.BACKGROUNDCOLOR)
     pg.display.flip()
     return screen
