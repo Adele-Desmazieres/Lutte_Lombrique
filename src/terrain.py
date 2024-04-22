@@ -37,6 +37,11 @@ class Terrain:
 		self.square_size = square_size # number of pixels in a square side
 		terrainSurfaces = set()
 		
+		# ajoute des 0 autour de la map
+		mapframed = [[0] + map[i] + [0] for i in range(len(map))]
+		mapframed = [[0] * len(mapframed[0])] + mapframed + [[0] * len(mapframed[0])]
+		map = mapframed
+
 		for i in range(len(map)-1):
 			for j in range(len(map[i])-1):
 				coefs = (map[i][j], map[i][j+1], map[i+1][j+1], map[i+1][j])

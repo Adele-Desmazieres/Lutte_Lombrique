@@ -61,9 +61,6 @@ class Map2D:
 		coefs = self.coefs
 		# inverse la map
 		coefs = [[coefs[i][j] for i in range(len(coefs))] for j in range(len(coefs[0]))]
-		# ajoute des 0 autour de la map
-		coefs = [[0] + coefs[i] + [0] for i in range(len(coefs))]
-		coefs = [[0] * len(coefs[0])] + coefs + [[0] * len(coefs[0])]
 		return coefs
 	
 	def __str__(self):
