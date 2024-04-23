@@ -1,6 +1,7 @@
 import pygame as pg
 from PIL import Image, ImageDraw
 from settings import *
+import random as rd
 
 class View:
     
@@ -9,11 +10,28 @@ class View:
         self.font_big = pg.font.Font(Settings.FONTNAME, Settings.FONTSIZEBIG)
         self.font_small = pg.font.Font(Settings.FONTNAME, Settings.FONTSIZESMALL)
         
-        self.terrain_img = Image.open(Settings.TERRAIN_IMG_PATH)
-        self.terrain_img = self.terrain_img.resize((Settings.XMAX, Settings.YMAX))
+        self.terrain_img = pg.image.load(Settings.TERRAIN_IMG_PATH)
+        self.terrain_img = pg.transform.scale(self.terrain_img, (Settings.XMAX, Settings.YMAX))
+        self.terrain_img.fill((180, 180, 100), special_flags=pg.BLEND_RGB_MULT)
+        self.terrain_img.fill((20, 20, 5), special_flags=pg.BLEND_RGB_ADD)
+        self.terrain_img.fill((rd.randrange(50), rd.randrange(50), rd.randrange(50)), special_flags=pg.BLEND_RGB_ADD)
+        size = self.terrain_img.get_size()
+        string_img = pg.image.tobytes(self.terrain_img, 'RGBA')
+        self.terrain_img = Image.frombytes('RGBA', size, string_img)
+
+        # self.terrain_img = Image.open(Settings.TERRAIN_IMG_PATH)
+        # self.terrain_img = self.terrain_img.resize((Settings.XMAX, Settings.YMAX))
         
         self.pg_terrain_img = None
-        self.update_terrain_img(game)
+        self.pg_terrain_img = self.update_terrain_img(game)
+        
+        self.pg_terrain_img_initial = self.pg_terrain_img.copy()
+        self.pg_terrain_img_initial.fill((100, 100, 100), special_flags=pg.BLEND_RGB_SUB)
+        
+        self.pg_sky_img = pg.image.load(Settings.SKY_IMG_PATH)
+        self.pg_sky_img = pg.transform.scale(self.pg_sky_img, (Settings.XMAX, Settings.YMAX))
+        self.pg_sky_img.fill((70, 70, 70, 0), special_flags=pg.BLEND_RGBA_SUB)
+        
     
     def update_terrain_img(self, game):
         cropped_img = pg.Surface((Settings.XMAX, Settings.YMAX), pg.SRCALPHA)
@@ -49,18 +67,21 @@ class View:
         
         # add this to the final pygame image
         cropped_img.blit(out_pygame_surface, (0,0))
-                
-        self.pg_terrain_img = cropped_img
+        return cropped_img
 
+    def set_terrain_img(self, newimg):
+        self.pg_terrain_img = newimg
     
     def draw(self, game):
         screen = self.screen
         
-        screen.fill(Settings.BACKGROUNDCOLOR)
+        # screen.fill(Settings.BACKGROUNDCOLOR)
+        screen.blit(self.pg_sky_img, (0,0))
+        screen.blit(self.pg_terrain_img_initial, (0,0))
         screen.blit(self.pg_terrain_img, (0,0))
     
         for s in game.terrain.surfaces:
-            pg.draw.line(screen, (00, 00, 00), s.p, s.q, width=2)
+            pg.draw.line(screen, (10, 10, 10), s.p, s.q, width=3)
     
         for w in game.worms:
             w.moveFree()

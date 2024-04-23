@@ -1,3 +1,5 @@
+import random as rd
+
 class Settings:
 	
 	GRAVITY = 0.18
@@ -13,7 +15,8 @@ class Settings:
 	MAP_COEF_MAX = 10 # coef allant de 0 à ca
 	MAP_THRESHOLD = 5 # seuil entre le terrain si coef supérieur, et l'air si coef inférieur
 	
-	TERRAIN_IMG_PATH = '../img/terrain4.jpg'
+	TERRAIN_IMG_PATH = '../img/terrain' + str(rd.randrange(1, 5)) + '.jpg'
+	SKY_IMG_PATH = '../img/sky1.jpg'
 	BACKGROUNDCOLOR = (30, 30, 100)
 	WORMCOLOR = (230, 143, 124)
 	FONTNAME = "freesansbold.ttf"
