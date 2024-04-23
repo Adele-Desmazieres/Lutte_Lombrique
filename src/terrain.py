@@ -51,7 +51,6 @@ class Terrain:
 		
 		polygons = self.init_points_lists() # a list of lists of (int, int)
 		self.polygons = polygons
-		# print(self.surfaces)		
 	
 	# input : les coefs des 4 coins d'un carré, ses coordonées du coin supérieur gauche
 	# output : la liste des lignes passant par ce carré
@@ -139,12 +138,10 @@ class Terrain:
 				current_list.append(s.q)
 				p = s.q
 			
-			# keeps polygons with more than 10 points
+			# keeps only polygons with more than 10 points
 			if len(current_list) >= 10:
 				kept_surfaces.update(curr_kept_surfaces)
 				points_lists.append(current_list)
-			else:
-				print("REMOVED A POLYGON")
 				
 			current_list = []
 		

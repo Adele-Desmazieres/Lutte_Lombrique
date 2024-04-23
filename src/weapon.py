@@ -81,7 +81,6 @@ class Grenade(Weapon, PhysicalSphere):
                 
                 vx = projection_force * math.cos(projection_angle)
                 vy = projection_force * math.sin(projection_angle)
-                print(vx, vy)
                 w.ejected(Vector(vx, vy))
         
     def explode_terrain(self, game):
@@ -92,7 +91,7 @@ class Grenade(Weapon, PhysicalSphere):
                 y = j * Settings.MAP_SQUARE_SIZE
                 distance = math.sqrt((x - self.x) ** 2 + (y - self.y) ** 2)
                 
-                updatelimit = self.explosionRadius + Settings.MAP_SQUARE_SIZE*2 + 5
+                updatelimit = self.explosionRadius + Settings.MAP_SQUARE_SIZE*2
                 if distance <= updatelimit and newmap[i][j] >= Settings.MAP_THRESHOLD:
                     newvalue = distance * (Settings.MAP_THRESHOLD+1) / updatelimit
                     newmap[i][j] = min(newmap[i][j], newvalue)

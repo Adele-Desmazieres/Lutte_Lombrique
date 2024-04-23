@@ -15,7 +15,6 @@ class PhysicalSphere:
     def moveFree(self):
         self.deplacementVec.add(self.gravityVector)
         self.handleCollision()
-        # print(self.deplacementVec)
         self.x += self.deplacementVec.vx
         self.y += self.deplacementVec.vy
 
