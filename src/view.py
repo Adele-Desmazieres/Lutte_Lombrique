@@ -18,6 +18,7 @@ class View:
     def update_terrain_img(self, game):
         cropped_img = pg.Surface((Settings.XMAX, Settings.YMAX), pg.SRCALPHA)
         
+        # Source éditée : https://stackoverflow.com/a/51537885
         # create the mask
         mask = Image.new('RGBA', self.terrain_img.size)
         d = ImageDraw.Draw(mask)
