@@ -91,10 +91,12 @@ class Grenade(Weapon, PhysicalSphere):
                 x = i * Settings.MAP_SQUARE_SIZE
                 y = j * Settings.MAP_SQUARE_SIZE
                 distance = math.sqrt((x - self.x) ** 2 + (y - self.y) ** 2)
-                updatelimit = self.explosionRadius + Settings.MAP_SQUARE_SIZE*2
+                
+                updatelimit = self.explosionRadius + Settings.MAP_SQUARE_SIZE*2 + 5
                 if distance <= updatelimit and newmap[i][j] >= Settings.MAP_THRESHOLD:
-                    newmap[i][j] = (distance * (Settings.MAP_THRESHOLD+1) / updatelimit)
-                    print(newmap[i][j])
+                    newvalue = distance * (Settings.MAP_THRESHOLD+1) / updatelimit
+                    newmap[i][j] = min(newmap[i][j], newvalue)
+                    
         game.map = newmap
         game.initTerrain()
         game.view.update_terrain_img(game)
