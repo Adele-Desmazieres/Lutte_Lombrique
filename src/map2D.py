@@ -65,7 +65,7 @@ class Map2D:
 				c[i][j] += ((i//zonesize) * groundseparation / (self.height//zonesize)) - (groundseparation/2)
 				
 				# add noise
-				self.coefs[i][j] += rd.randrange(-5, 5)
+				# self.coefs[i][j] += rd.randrange(-1, 1)
 				
 		self.coefs = c
 		
