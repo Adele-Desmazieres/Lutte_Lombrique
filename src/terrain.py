@@ -1,8 +1,9 @@
 import math
 from physical_sphere import * 
 
-
-class SurfaceTerrain: # le terrain est sous la ligne définie par le point p à gauche et le point q à droite
+# Segment séparant l'air du terrain. 
+# Le terrain est sous la ligne définie par le point p à gauche et le point q à droite.
+class SurfaceTerrain: 
 	
 	def __init__(self, p, q):
 		self.p = p
@@ -30,6 +31,15 @@ class SurfaceTerrain: # le terrain est sous la ligne définie par le point p à 
 		n = (m[0] + v.vx, m[1] + v.vy)
 		return (m, n)
 
+# Ensemble des points formant un polygone de terrain.
+# Ou un polygone d'air au sein d'un polygone de terrain.
+class Polygon:
+	
+	def __init__(self, points, is_terrain):
+		self.points = points # list of points, ordered to draw a simple polygon
+		self.is_terrain = is_terrain # true if the terrain is inside this
+		self.length = len(self.points)
+
 class Terrain:
 	
 	def __init__(self, map, square_size, generation_threshold):
@@ -49,7 +59,7 @@ class Terrain:
 				terrainSurfaces = terrainSurfaces.union(surfaces)
 		self.surfaces = terrainSurfaces
 		
-		polygons = self.init_points_lists() # a list of lists of (int, int)
+		polygons = self.init_points_lists() # a list of polygons
 		self.polygons = polygons
 	
 	# input : les coefs des 4 coins d'un carré, ses coordonées du coin supérieur gauche
@@ -119,7 +129,7 @@ class Terrain:
 				return {}
 	
 	def init_points_lists(self):
-		points_lists = []
+		polygons = []
 		current_list = []
 		surfaces = self.surfaces.copy()
 		kept_surfaces = set()
@@ -130,9 +140,12 @@ class Terrain:
 			current_list.append(s.p)
 			current_list.append(s.q)
 			p = s.q
+			clockwiseangle = 0
 			
 			while (len({s for s in surfaces if coords_almost_equals(s.p, p)}) >= 1): # tant que s a un vecteur partant du point précédent
-				s = {s for s in surfaces if coords_almost_equals(s.p, p)}.pop() # dans surfaces et son p est égal à p
+				s2 = {s for s in surfaces if coords_almost_equals(s.p, p)}.pop() # dans surfaces et son p est égal à p
+				clockwiseangle += math.pi - angle(s.p, s.q, s2.q)
+				s = s2
 				surfaces.remove(s)
 				curr_kept_surfaces.add(s)
 				current_list.append(s.q)
@@ -141,13 +154,15 @@ class Terrain:
 			# keeps only polygons with more than 10 points
 			if len(current_list) >= 10:
 				kept_surfaces.update(curr_kept_surfaces)
-				points_lists.append(current_list)
+				# print(math.degrees(clockwiseangle))
+				polygon = Polygon(current_list, (clockwiseangle >= 0))
+				polygons.append(polygon)
 				
 			current_list = []
 		
 		self.surfaces = kept_surfaces
 		
-		return points_lists
+		return polygons
 	
 
 
@@ -159,4 +174,6 @@ def coords_almost_equals(c, d):
 def middleCoord(c1, c2):
 	return ((c1[0]+c2[0])/2, (c1[1]+c2[1])/2)
 
-
+def angle(a, b, c):
+	ang = math.atan2(c[1]-b[1], c[0]-b[0]) - math.atan2(a[1]-b[1], a[0]-b[0])
+	return ang + math.pi*2 if ang < 0 else ang

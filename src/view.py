@@ -18,30 +18,36 @@ class View:
     def update_terrain_img(self, game):
         cropped_img = pg.Surface((Settings.XMAX, Settings.YMAX), pg.SRCALPHA)
         
-        for polygon in game.terrain.polygons:
+        # create the mask
+        mask = Image.new('RGBA', self.terrain_img.size)
+        d = ImageDraw.Draw(mask)
+        
+        # order polygon with terrain polygons first, then air polygons
+        pgs = game.terrain.polygons
+        pgs = sorted(pgs, key=lambda x: int(x.is_terrain), reverse=True)
+        
+        for polygon in pgs:
             
-            if len(polygon) <= 2:
-                continue
-            # pg.draw.polygon(screen, (rd.randrange(255), rd.randrange(255), rd.randrange(255)), polygon)
-            # pg.draw.polygon(screen, (200, 150, 50), polygon)
+            if polygon.is_terrain:
+                # fill the mask with black if the polygon is terrain
+                d.polygon(polygon.points, fill=(0, 0, 0, 255))
+            else:
+                # otherwise fill the mask with transparent
+                d.polygon(polygon.points, fill=(0, 0, 0, 0))
             
-            # create the mask
-            mask = Image.new('RGBA', self.terrain_img.size)
-            d = ImageDraw.Draw(mask)
-            d.polygon(polygon, fill='#000')
-            
-            # cut out the form of the mask from the image terrain_img
-            out = Image.new('RGBA', self.terrain_img.size)
-            out.paste(self.terrain_img, (0,0), mask)
-            out_data = out.tobytes()
-            out_dimensions = out.size
-            out_pygame_surface = pg.image.fromstring(out_data, out_dimensions, 'RGBA')
-            
-            # optimisation
-            out_pygame_surface = out_pygame_surface.convert_alpha()
-            
-            # add this polygon to the final image
-            cropped_img.blit(out_pygame_surface, (0,0))
+        out = Image.new('RGBA', self.terrain_img.size)
+        
+        # cut the form of the mask from the image terrain_img
+        out.paste(self.terrain_img, (0,0), mask)
+        out_data = out.tobytes('raw', 'RGBA')
+        out_dimensions = out.size
+        out_pygame_surface = pg.image.fromstring(out_data, out_dimensions, 'RGBA')
+        
+        # optimisation
+        out_pygame_surface = out_pygame_surface.convert_alpha()
+        
+        # add this to the final pygame image
+        cropped_img.blit(out_pygame_surface, (0,0))
                 
         self.pg_terrain_img = cropped_img
 
