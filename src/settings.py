@@ -12,11 +12,14 @@ class Settings:
 	YMIN = 0
 	YMAX = 600
 	MAP_SQUARE_SIZE = 10 # en pixel
-	MAP_COEF_MAX = 10 # coef allant de 0 à ca
+	MAP_COEF_MIN = 0
+	MAP_COEF_MAX = 10
 	MAP_THRESHOLD = 5 # seuil entre le terrain si coef supérieur, et l'air si coef inférieur
 	
 	TERRAIN_IMG_PATH = '../img/terrain' + str(rd.randrange(1, 5)) + '.jpg'
-	SKY_IMG_PATH = '../img/sky1.jpg'
+	# TERRAIN_IMG_PATH = '../img/terrain6.jpg'
+	SKY_IMG_PATH = '../img/sky3.jpg'
+	# SKY_IMG_PATH = TERRAIN_IMG_PATH
 	WORM_IMG_PATH = "../img/worm.png"
 	BACKGROUNDCOLOR = (30, 30, 100)
 	WORMCOLOR = (230, 143, 124)

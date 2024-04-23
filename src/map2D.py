@@ -14,9 +14,9 @@ class Map2D:
 		self.midcoef = (mincoef+maxcoef) / 2
 		
 		self.coefs = []
-		for i in range(height-1):
+		for i in range(height):
 			l = []
-			for j in range(width-1):
+			for j in range(width):
 				l.append(rd.randrange(mincoef, maxcoef))
 			self.coefs.append(l)
 		

@@ -11,10 +11,11 @@ class View:
         self.font_small = pg.font.Font(Settings.FONTNAME, Settings.FONTSIZESMALL)
         
         self.terrain_img = pg.image.load(Settings.TERRAIN_IMG_PATH)
+        self.terrain_img = pg.transform.flip(self.terrain_img, False, True)
         self.terrain_img = pg.transform.scale(self.terrain_img, (Settings.XMAX, Settings.YMAX))
         self.terrain_img.fill((180, 180, 100), special_flags=pg.BLEND_RGB_MULT)
         self.terrain_img.fill((20, 20, 5), special_flags=pg.BLEND_RGB_ADD)
-        self.terrain_img.fill((rd.randrange(50), rd.randrange(50), rd.randrange(50)), special_flags=pg.BLEND_RGB_ADD)
+        self.terrain_img.fill((rd.randrange(50), rd.randrange(1), rd.randrange(50)), special_flags=pg.BLEND_RGB_ADD)
         size = self.terrain_img.get_size()
         string_img = pg.image.tobytes(self.terrain_img, 'RGBA')
         self.terrain_img = Image.frombytes('RGBA', size, string_img)
@@ -30,7 +31,7 @@ class View:
         
         self.pg_sky_img = pg.image.load(Settings.SKY_IMG_PATH)
         self.pg_sky_img = pg.transform.scale(self.pg_sky_img, (Settings.XMAX, Settings.YMAX))
-        self.pg_sky_img.fill((70, 70, 70, 0), special_flags=pg.BLEND_RGBA_SUB)
+        self.pg_sky_img.fill((50, 90, 50, 0), special_flags=pg.BLEND_RGBA_MULT)
         
     
     def update_terrain_img(self, game):

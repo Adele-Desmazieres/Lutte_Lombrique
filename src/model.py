@@ -62,9 +62,11 @@ class Model:
         self.square_size = 20
     
     def initMap(self):
-        self.map = Map2D(90, 60, 0, 10).getCoefsFormatted()
-        self.generation_threshold = 5
-        self.square_size = min(Settings.YMAX/(len(self.map[0])-1), Settings.XMAX/(len(self.map)-1))
+        w = Settings.XMAX // Settings.MAP_SQUARE_SIZE
+        h = Settings.YMAX // Settings.MAP_SQUARE_SIZE
+        self.map = Map2D(w, h, Settings.MAP_COEF_MIN, Settings.MAP_COEF_MAX).getCoefsFormatted()
+        self.generation_threshold = Settings.MAP_THRESHOLD
+        self.square_size = Settings.MAP_SQUARE_SIZE
     
     def initTerrain(self):
         self.terrain = Terrain(self.map, self.square_size, self.generation_threshold)
