@@ -123,9 +123,11 @@ class Terrain:
 		points_lists = []
 		current_list = []
 		surfaces = self.surfaces.copy()
+		kept_surfaces = set()
 		
 		while (surfaces):
 			s = surfaces.pop()
+			curr_kept_surfaces = {s}
 			current_list.append(s.p)
 			current_list.append(s.q)
 			p = s.q
@@ -133,12 +135,20 @@ class Terrain:
 			while (len({s for s in surfaces if coords_almost_equals(s.p, p)}) >= 1): # tant que s a un vecteur partant du point précédent
 				s = {s for s in surfaces if coords_almost_equals(s.p, p)}.pop() # dans surfaces et son p est égal à p
 				surfaces.remove(s)
+				curr_kept_surfaces.add(s)
 				current_list.append(s.q)
 				p = s.q
 			
-			# TODO : remove little polygons
-			points_lists.append(current_list)
+			# keeps polygons with more than 10 points
+			if len(current_list) >= 10:
+				kept_surfaces.update(curr_kept_surfaces)
+				points_lists.append(current_list)
+			else:
+				print("REMOVED A POLYGON")
+				
 			current_list = []
+		
+		self.surfaces = kept_surfaces
 		
 		return points_lists
 	
