@@ -24,11 +24,7 @@ class Worm(PhysicalSphere):
         self.image = pg.image.load(Settings.WORM_IMG_PATH)
         self.width = self.radius * 1.5
         self.height = self.image.get_height() * self.width / self.image.get_width()
-        # self.width = self.image.get_width() * self.height / self.image.get_height()
         self.image = pg.transform.scale(self.image, (self.width, self.height))
-        self.outline = self.image.copy()
-        self.outline = pg.transform.scale_by(self.outline, (1.4, 1.4))
-        self.outline.fill((0, 0, 0, 0), special_flags=pg.BLEND_RGB_MIN)
 
     def loseHp(self, damage):
         self.hp -= damage
@@ -59,15 +55,12 @@ class Worm(PhysicalSphere):
             self.powerCharge += 2
 
     def draw(self, screen, view):
-        # affiche le cercle du worm
-        # pg.draw.circle(screen, Settings.WORMCOLOR, (self.x, self.y), self.radius)
-        # pg.draw.circle(screen, (10, 10, 10), (self.x, self.y), self.radius, width=2)
-        # w2 = self.outline.get_width()
-        # h2 = self.outline.get_height()
-        # screen.blit(self.outline, (self.x-w2//2-1, self.y-h2//2-1))
+        # affiche le worm
         x2 = self.x + self.radius - self.width
         y2 = self.y + self.radius - self.height
         screen.blit(self.image, (x2, y2))
+        # affiche sa hitbox
+        # pg.draw.circle(screen, (255, 10, 10), (self.x, self.y), self.radius, width=2)
         
         # affiche les points de vie des worms
         text = view.font_small.render(str(self.hp), True, pg.Color("white"))
