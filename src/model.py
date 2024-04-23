@@ -47,16 +47,21 @@ class Model:
     def setView(self, view):
         self.view = view
     
-    def initMap(self):
-        # map = [[0, 0, 0, 0, 0, 0, 0], 
-        #        [0, 1, 1, 1, 0, 0, 0],
-        #        [0, 1, 1, 1, 1, 0, 0],
-        #        [0, 1, 1, 1, 1, 1, 0],
-        #        [0, 0, 0, 0, 0, 0, 0]
-        #        ]
-        # generation_threshold = 0.5
-        # square_size = 60
+    def initMapTest(self):
+        self.map = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+                    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+                    [0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0],
+                    [0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0],
+                    [0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0],
+                    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+                    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    ]
+        self.generation_threshold = 0.5
+        self.square_size = 20
     
+    def initMap(self):
         self.map = Map2D(90, 60, 0, 10).getCoefsFormatted()
         self.generation_threshold = 5
         self.square_size = min(Settings.YMAX/(len(self.map[0])-1), Settings.XMAX/(len(self.map)-1))

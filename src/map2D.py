@@ -14,9 +14,9 @@ class Map2D:
 		self.midcoef = (mincoef+maxcoef) / 2
 		
 		self.coefs = []
-		for i in range(height):
+		for i in range(height-1):
 			l = []
-			for j in range(width):
+			for j in range(width-1):
 				l.append(rd.randrange(mincoef, maxcoef))
 			self.coefs.append(l)
 		
@@ -24,7 +24,7 @@ class Map2D:
 		self.normalizeTerrain()
 		for i in range(6):
 			self.smoothOneTime()
-		self.normalizeTerrain()
+			self.normalizeTerrain()
 	
 	def smoothOneTime(self):
 		c = self.coefs
@@ -46,6 +46,7 @@ class Map2D:
 				nbcoefsup = len([x for x in l if x is not None and x >= self.midcoef])
 				c[i][j] += (nbcoefsup - 3.6) * 3 # we can play with theses parameters
 				
+
 		self.coefs = c
 	
 	def addLowerTerrainAndCliffs(self):
@@ -55,16 +56,16 @@ class Map2D:
 			for i in range(len(c)):
 								
 				# add a few mountains and cliffs
-				c[i][j] += math.sin(j / 3)
-				
-				# add noise
-				# c[i][j] += math.cos(i * j + 1)
+				c[i][j] += math.sin(j / 3) * 0.7
 				
 				# add more terrain on ground and remove some terrain from the sky
 				nbr_zones = 5
 				zonesize = self.height / nbr_zones
 				groundseparation = 5
 				c[i][j] += ((i//zonesize) * groundseparation / (self.height//zonesize)) - (groundseparation/2)
+				
+				# add noise
+				self.coefs[i][j] += rd.randrange(-5, 5)
 				
 		self.coefs = c
 		
@@ -88,6 +89,10 @@ class Map2D:
 		coefs = self.coefs
 		# inverse la map
 		coefs = [[coefs[i][j] for i in range(len(coefs))] for j in range(len(coefs[0]))]
+		# ajoute des 0 autour de la map
+		coefs = [[0] + coefs[i] + [0] for i in range(len(coefs))]
+		coefs = [[0] * len(coefs[0])] + coefs + [[0] * len(coefs[0])]
+
 		return coefs
 	
 	def __str__(self):

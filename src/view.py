@@ -22,9 +22,9 @@ class View:
         mask = Image.new('RGBA', self.terrain_img.size)
         d = ImageDraw.Draw(mask)
         
-        # order polygon with terrain polygons first, then air polygons
+        # order polygons by size to draw the bigger first, and the smaller inside then
         pgs = game.terrain.polygons
-        pgs = sorted(pgs, key=lambda x: int(x.is_terrain), reverse=True)
+        pgs = sorted(pgs, key=lambda x: x.length, reverse=True)
         
         for polygon in pgs:
             
