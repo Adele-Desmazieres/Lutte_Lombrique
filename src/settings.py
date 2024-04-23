@@ -17,6 +17,7 @@ class Settings:
 	
 	TERRAIN_IMG_PATH = '../img/terrain' + str(rd.randrange(1, 5)) + '.jpg'
 	SKY_IMG_PATH = '../img/sky1.jpg'
+	WORM_IMG_PATH = "../img/worm.png"
 	BACKGROUNDCOLOR = (30, 30, 100)
 	WORMCOLOR = (230, 143, 124)
 	FONTNAME = "freesansbold.ttf"
