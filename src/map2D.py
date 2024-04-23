@@ -6,23 +6,32 @@ class Map2D:
 	def __init__(self, width, height, mincoef, maxcoef):
 		self.width = width
 		self.height = height
+		
 		self.mincoef = mincoef
 		self.maxcoef = maxcoef
+		self.currmincoef = mincoef
+		self.currmaxcoef = maxcoef
 		self.midcoef = (mincoef+maxcoef) / 2
+		
 		self.coefs = []
 		for i in range(height):
 			l = []
 			for j in range(width):
 				l.append(rd.randrange(mincoef, maxcoef))
 			self.coefs.append(l)
-			
-		for i in range(8):
+		
+		self.addLowerTerrainAndCliffs()
+		self.normalizeTerrain()
+		for i in range(6):
 			self.smoothOneTime()
+		self.normalizeTerrain()
 	
 	def smoothOneTime(self):
 		c = self.coefs
+		
 		for j in range(len(c[0])):
 			for i in range(len(c)):
+				
 				# smooth each square according to its neighbours
 				c1 = self.coefs[i-1][j-1] if self.checkInRange(i-1, j-1) else None
 				c2 = self.coefs[i-1][j] if self.checkInRange(i-1, j) else None
@@ -33,9 +42,18 @@ class Map2D:
 				c7 = self.coefs[i+1][j] if self.checkInRange(i+1, j) else None
 				c8 = self.coefs[i+1][j+1] if self.checkInRange(i+1, j+1) else None
 				l = [c1, c2, c3, c4, c5, c6, c7, c8]
-				nbcoefsup = len([x for x in l if x is not None and x > self.midcoef])
+				
+				nbcoefsup = len([x for x in l if x is not None and x >= self.midcoef])
 				c[i][j] += (nbcoefsup - 3.6) * 3 # we can play with theses parameters
 				
+		self.coefs = c
+	
+	def addLowerTerrainAndCliffs(self):
+		c = self.coefs
+		
+		for j in range(len(c[0])):
+			for i in range(len(c)):
+								
 				# add a few mountains and cliffs
 				c[i][j] += math.sin(j / 3)
 				
@@ -47,12 +65,21 @@ class Map2D:
 				zonesize = self.height / nbr_zones
 				groundseparation = 5
 				c[i][j] += ((i//zonesize) * groundseparation / (self.height//zonesize)) - (groundseparation/2)
-
-				# truncate between max and min coef
-				c[i][j] = max(min(c[i][j], self.maxcoef), self.mincoef)
 				
 		self.coefs = c
-		# TODO : test this
+		
+	def normalizeTerrain(self):
+		# normalize terrain between mincoef and maxcoef
+		a = (self.mincoef-self.maxcoef) / (self.currmincoef-self.currmaxcoef)
+		b = self.maxcoef - a * self.currmaxcoef
+		
+		c = self.coefs
+		
+		for j in range(len(c[0])):
+			for i in range(len(c)):
+				c[i][j] = a * c[i][j] + b
+		
+		self.coefs = c
 	
 	def checkInRange(self, i, j):
 		return 0 <= i < len(self.coefs) and 0 <= j < len(self.coefs[i])

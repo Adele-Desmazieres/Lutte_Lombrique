@@ -136,6 +136,7 @@ class Terrain:
 				current_list.append(s.q)
 				p = s.q
 			
+			# TODO : remove little polygons
 			points_lists.append(current_list)
 			current_list = []
 		
