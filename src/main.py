@@ -35,7 +35,7 @@ def initGameValues(game):
     
     # TODO : plusieurs worms appartenant à un joueur et gerer le chgt de tour
     for i in range(Settings.NUMBEROFPLAYERS):
-        w = Worm((i + 1) * 50, Settings.YMAX - Worm.radius - 1)
+        w = Worm((i + 1) * 50, 100)#Settings.YMAX - Worm.radius - 1)
         game.worms.append(w)
 
 
@@ -106,7 +106,7 @@ def mainloop(game, view):
                     game.state = GameState.INTERACTIVE
             if isinstance(obj, Bazooka):
                 if obj.collisionDetected: # TODO : if collision
-                    Explosion.draw_explosion(screen, (obj.x, obj.y))
+                    Explosion.draw_explosion(screen, obj.collisionPoint)
                     obj.explode(game.worms)
                     game.objects.remove(obj)
                     game.state = GameState.INTERACTIVE

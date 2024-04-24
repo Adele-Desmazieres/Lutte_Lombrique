@@ -54,11 +54,11 @@ class View:
             pg.draw.line(screen, (200, 200, 200), s.p, s.q, width=3)
     
         for w in game.worms:
-            w.moveFree()
+            w.moveFree(game.terrain)
             w.draw(screen)
     
         for o in game.objects:
-            o.moveFree()
+            o.moveFree(game.terrain)
             o.draw(screen)
     
         if (game.hasInventoryOpened()):

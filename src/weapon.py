@@ -64,9 +64,10 @@ class Bazooka(Weapon, PhysicalSphere):
     def __init__(self, x, y, angle):
         Weapon.__init__(self, 60)
         PhysicalSphere.__init__(self, x, y, self.radius)
-        self.deplacementVec.vy = math.sin(math.radians(angle)) * 80
-        self.deplacementVec.vx = math.cos(math.radians(angle)) * 80
+        self.deplacementVec.vy = math.sin(math.radians(angle)) * 30
+        self.deplacementVec.vx = math.cos(math.radians(angle)) * 30
         self.collisionDetected = False
+        self.collisionPoint = (0, 0)
 
     def explode(self, worms):
         for w in worms:
@@ -76,20 +77,27 @@ class Bazooka(Weapon, PhysicalSphere):
         # todo : passer le terrain en paramètre et reprendre la même logique pour casser les bouts de terrain
 
     # TODO cette fonction doit être la copie quasi exacte d'handle collision mais passe X à true si collision
-    def handleCollision(self):
+    def handleCollision(self, terrain):
+        # TODO : ajouter en arguments les autres worms pour que leurs hitbox soient détéctées comme des collisions
         stuckGround = False
         if (self.x + self.radius + self.deplacementVec.vx > Settings.XMAX) or (
                 self.x - self.radius + self.deplacementVec.vx < Settings.XMIN):
             self.collisionDetected = True
+            self.collisionPoint = (self.x, self.y)
+            print("x = {}, y = {} ".format(self.x, self.y))
 
         if (self.y + self.radius + self.deplacementVec.vy > Settings.YMAX) or (
                 self.y - self.radius + self.deplacementVec.vy < Settings.YMIN):
             self.collisionDetected = True
+            self.collisionPoint = (self.x, self.y)
 
-        # TODO : gérer collisions avec le terrain
 
+        for surface in terrain.surfaces:
+            if self.intersects(surface):
+                self.collisionDetected = True
+                self.collisionPoint = (self.x, self.y)
+                break
 
-        # colle l'objet au sol
         if stuckGround:
             self.deplacementVec.vx = 0
             self.deplacementVec.vy = 0
