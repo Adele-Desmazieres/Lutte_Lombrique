@@ -66,6 +66,8 @@ def mainloop(game, view):
                     else:
                         if event.key == pg.K_RSHIFT:
                             game.inventory.changeSelectedItem()
+                        elif event.key == pg.K_BACKSPACE:
+                            game.inventoryState = InventoryState.Closed
                        
                 if event.type == pg.KEYUP and game.inventoryState == InventoryState.Opened:
                     if event.key == pg.K_SPACE:
