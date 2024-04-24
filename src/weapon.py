@@ -47,11 +47,18 @@ class Grenade(Weapon, PhysicalSphere):
         self.creation_tick = pg.time.get_ticks()
 
     def explode(self, worms):
+        # TODO : appliquer la force de poussée aux worms
         for w in worms:
             distance = math.sqrt((w.x - self.x) ** 2 + (w.y - self.y) ** 2)
             if distance <= self.explosionRadius:
                 w.loseHp(self.damage)
-        # todo : passer le terrain en paramètre et reprendre la même logique pour casser les bouts de terrain
+                if distance > 0:
+                    # TODO : rendre la force proportionnelle à la distance ? force_magnitude = (self.explosionRadius - distance) / self.explosionRadius
+                    force_magnitude = 10
+                    angle_to_worm = math.atan2(w.y - self.y, w.x - self.x)
+                    w.deplacementVec.vx += math.cos(angle_to_worm) * force_magnitude
+                    w.deplacementVec.vy += math.sin(angle_to_worm) * force_magnitude
+
 
     def draw(self, screen):
         pg.draw.circle(screen, (0, 255, 0), (self.x, self.y), self.radius)
@@ -75,11 +82,17 @@ class Bazooka(Weapon, PhysicalSphere):
             distance = math.sqrt((w.x - x) ** 2 + (w.y - y) ** 2)
             if distance <= self.explosionRadius:
                 w.loseHp(self.damage)
+                if distance > 0:
+                    # TODO : rendre la force proportionnelle à la distance ? force_magnitude = (self.explosionRadius - distance) / self.explosionRadius
+                    force_magnitude = 10
+                    angle_to_worm = math.atan2(w.y - y, w.x - x)
+                    w.deplacementVec.vx += math.cos(angle_to_worm) * force_magnitude
+                    w.deplacementVec.vy += math.sin(angle_to_worm) * force_magnitude
         # todo : passer le terrain en paramètre et reprendre la même logique pour casser les bouts de terrain
 
     # TODO cette fonction doit être la copie quasi exacte d'handle collision mais passe X à true si collision
     def handleCollision(self, terrain):
-        # TODO : ajouter en arguments les autres worms pour que leurs hitbox soient détéctées comme des collisions
+        # TODO : ajouter en arguments les autres worms pour que leurs hitbox soient détéctées comme des collisions ?
         stuckGround = False
         if (self.x + self.radius + self.deplacementVec.vx > Settings.XMAX) or (
                 self.x - self.radius + self.deplacementVec.vx < Settings.XMIN):
