@@ -100,13 +100,13 @@ def mainloop(game, view):
             if isinstance(obj, Grenade):
                 if pg.time.get_ticks() - obj.creation_tick > 5000:
                     # TODO: boom animation + appliquer dégâts au terrain + force répulsion worms
-                    Explosion.draw_explosion(screen, (obj.x, obj.y))
+                    Explosion.draw_explosion(screen, (obj.x, obj.y), obj.explosionRadius)
                     obj.explode(game.worms)
                     game.objects.remove(obj)
                     game.state = GameState.INTERACTIVE
             if isinstance(obj, Bazooka):
                 if obj.collisionDetected: # TODO : if collision
-                    Explosion.draw_explosion(screen, obj.collisionPoint)
+                    Explosion.draw_explosion(screen, obj.collisionPoint, obj.explosionRadius)
                     obj.explode(game.worms)
                     game.objects.remove(obj)
                     game.state = GameState.INTERACTIVE

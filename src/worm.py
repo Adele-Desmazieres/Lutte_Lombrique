@@ -18,7 +18,7 @@ class Worm(PhysicalSphere):
     def __init__(self, x, y):
         PhysicalSphere.__init__(self, x, y, 10)
         self.state = WormState.GROUNDED
-        self.bouncingAbsorption = 0.5
+        self.bouncingAbsorption = 0.4
         self.hp = 100
 
     def loseHp(self, damage):

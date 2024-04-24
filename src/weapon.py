@@ -59,7 +59,7 @@ class Grenade(Weapon, PhysicalSphere):
 class Bazooka(Weapon, PhysicalSphere):
     radius = 8
     bouncingAbsorption = 0.6
-    explosionRadius = 40
+    explosionRadius = 50
 
     def __init__(self, x, y, angle):
         Weapon.__init__(self, 60)
@@ -71,7 +71,8 @@ class Bazooka(Weapon, PhysicalSphere):
 
     def explode(self, worms):
         for w in worms:
-            distance = math.sqrt((w.x - self.x) ** 2 + (w.y - self.y) ** 2)
+            x, y = self.collisionPoint
+            distance = math.sqrt((w.x - x) ** 2 + (w.y - y) ** 2)
             if distance <= self.explosionRadius:
                 w.loseHp(self.damage)
         # todo : passer le terrain en paramètre et reprendre la même logique pour casser les bouts de terrain
