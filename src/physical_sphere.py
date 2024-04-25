@@ -1,5 +1,6 @@
 from settings import *
 from geometry import *
+import math
 
 
 class PhysicalSphere:
@@ -12,13 +13,14 @@ class PhysicalSphere:
         self.radius = radius
         self.deplacementVec = Vector(0, 0)
 
-    def moveFree(self):
+    def moveFree(self, terrain):
         self.deplacementVec.add(self.gravityVector)
-        self.handleCollision()
+        self.handleCollision(terrain)
+        # print(self.deplacementVec)
         self.x += self.deplacementVec.vx
         self.y += self.deplacementVec.vy
 
-    def handleCollision(self):
+    def handleCollision(self, terrain):
         stuckGround = False
         if (self.x + self.radius + self.deplacementVec.vx > Settings.XMAX) or (
                 self.x - self.radius + self.deplacementVec.vx < Settings.XMIN):
@@ -32,9 +34,63 @@ class PhysicalSphere:
             self.deplacementVec.vx *= self.bouncingAbsorption
             self.deplacementVec.vy = -self.deplacementVec.vy * self.bouncingAbsorption
 
-        # colle l'objet au sol
-        # if stuckGround:
-        #     self.deplacementVec.vx = 0
-        #     self.deplacementVec.vy = 0
+        for surface in terrain.surfaces:
+            if self.intersects(surface):
+                self.terrainCollision(surface)
+                break
+
+        if stuckGround:
+            self.deplacementVec.vx = 0
+            self.deplacementVec.vy = 0
+
+    def distanceToSurface(self, surface):
+        """ Calcule la distance du centre de la sphère jusqu'à la surface la plus proche. """
+        x1, y1 = surface.p
+        x2, y2 = surface.q
+
+        num = abs((y2 - y1) * self.x - (x2 - x1) * self.y + x2 * y1 - y2 * x1)
+        den = math.sqrt((y2 - y1) ** 2 + (x2 - x1) ** 2)
+        return num / den
+
+    def terrainCollision(self, surface):
+        angle_surface = math.atan2(surface.vec.vy, surface.vec.vx)
+        angle_normal = angle_surface + math.pi / 2
+
+        angle_incidence = math.atan2(-self.deplacementVec.vy, -self.deplacementVec.vx)
+        angle_reflected = angle_normal + (angle_normal - angle_incidence)
+
+        speed = math.hypot(self.deplacementVec.vx, self.deplacementVec.vy)
+        self.deplacementVec.vx = speed * math.cos(angle_reflected) * self.bouncingAbsorption
+        self.deplacementVec.vy = speed * math.sin(angle_reflected) * self.bouncingAbsorption
+
+        # Calcul du déplacement nécessaire pour éloigner la sphère du point de collision
+        overlap = self.radius - self.distanceToSurface(surface) + 0.1
+        if overlap > 0:  # Ajuster s'il y a chevauchement
+            self.x += math.cos(angle_normal) * overlap
+            self.y += math.sin(angle_normal) * overlap
+        else:
+            # Réduire la vitesse pour éviter que les corrections répétées ne causent des tremblements
+            self.deplacementVec.vx *= 0.5
+            self.deplacementVec.vy *= 0.5
+
+    def intersects(self, surface):
+        # Distance à la surface (redondant mes on a besoin des éléments du calcul)
+        x1, y1 = surface.p
+        x2, y2 = surface.q
+
+        num = abs((y2 - y1) * self.x - (x2 - x1) * self.y + x2 * y1 - y2 * x1)
+        den = math.sqrt((y2 - y1) ** 2 + (x2 - x1) ** 2)
+        distance = num / den
+
+        if distance > self.radius + 0.1:
+            return False
+
+        t = ((self.x - x1) * (x2 - x1) + (self.y - y1) * (y2 - y1)) / den ** 2
+        nearest_x = x1 + t * (x2 - x1)
+        nearest_y = y1 + t * (y2 - y1)
+
+        within_segment = (min(x1, x2) <= nearest_x <= max(x1, x2)) and (min(y1, y2) <= nearest_y <= max(y1, y2))
+
+        return within_segment
 
 

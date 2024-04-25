@@ -40,6 +40,8 @@ def mainloop(game, view):
                     else:
                         if event.key == pg.K_RSHIFT:
                             game.inventory.changeSelectedItem()
+                        elif event.key == pg.K_BACKSPACE:
+                            game.inventoryState = InventoryState.Closed
                        
                 if event.type == pg.KEYUP and game.inventoryState == InventoryState.Opened:
                     if event.key == pg.K_SPACE:
@@ -73,7 +75,14 @@ def mainloop(game, view):
         for obj in game.objects:
             if isinstance(obj, Grenade):
                 if pg.time.get_ticks() - obj.creation_tick > 5000:
+                    # TODO: boom animation + appliquer dégâts au terrain + force répulsion worms
                     Explosion.draw_explosion(screen, (obj.x, obj.y), obj.explosionRadius)
+                    obj.explode(game)
+                    game.objects.remove(obj)
+                    game.state = GameState.INTERACTIVE
+            if isinstance(obj, Bazooka):
+                if obj.collisionDetected: # TODO : if collision
+                    Explosion.draw_explosion(screen, obj.collisionPoint, obj.explosionRadius)
                     obj.explode(game)
                     game.objects.remove(obj)
                     game.state = GameState.INTERACTIVE

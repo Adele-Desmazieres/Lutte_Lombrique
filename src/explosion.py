@@ -8,8 +8,7 @@ class Explosion:
     def __init__(self):
         pass
     
-    def draw_explosion(screen, position, radius):
-        max_radius = radius
+    def draw_explosion(screen, position, max_radius):
         num_circles = 10
         clock = pg.time.Clock()
     

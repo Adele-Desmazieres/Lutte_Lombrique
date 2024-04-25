@@ -27,7 +27,7 @@ class Model:
         self.current_worm_id = 0
         self.worm_has_fired = False
         self.objects = []
-        self.rangedWeapons = [Item.Grenade]
+        self.rangedWeapons = [Item.Grenade, Item.Bazooka]
         
         self.inventory = Inventory()
         self.inventoryState = InventoryState.Closed
@@ -41,7 +41,7 @@ class Model:
     
         # TODO : plusieurs worms appartenant à un joueur et gerer le chgt de tour
         for i in range(Settings.NUMBEROFPLAYERS):
-            w = Worm((i + 1) * 50, Settings.YMAX - Worm.radius - 1)
+            w = Worm((i + 1) * 50, 100)
             self.worms.append(w)
     
     def setView(self, view):
