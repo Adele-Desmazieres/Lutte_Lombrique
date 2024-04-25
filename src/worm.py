@@ -5,9 +5,9 @@ from enum import Enum
 from physical_sphere import *
 from settings import *
 
-class WormState(Enum):
-    GROUNDED = 0
-    AIRBORNE = 1
+# class WormState(Enum):
+#     GROUNDED = 0
+#     AIRBORNE = 1
 
 
 class Worm(PhysicalSphere):
@@ -18,7 +18,7 @@ class Worm(PhysicalSphere):
 
     def __init__(self, x, y):
         PhysicalSphere.__init__(self, x, y, 10)
-        self.state = WormState.GROUNDED
+        # self.state = WormState.GROUNDED
         self.bouncingAbsorption = 0.4
         self.hp = 100
         self.image = pg.image.load(Settings.WORM_IMG_PATH)
@@ -30,17 +30,17 @@ class Worm(PhysicalSphere):
         self.hp -= damage
 
     def moveRight(self):
-        if self.state == WormState.GROUNDED:
+        if self.stuckGround:
             self.x += self.slideSpeed
 
     def moveLeft(self):
-        if self.state == WormState.GROUNDED:
+        if self.stuckGround:
             self.x -= self.slideSpeed
 
     def jump(self):
-        if self.state == WormState.GROUNDED:
+        if self.stuckGround:
             self.deplacementVec.vy = Settings.JUMPPOWER
-            self.state = WormState.AIRBORNE
+            self.stuckGround = False
 
     def aimLeft(self):
         if self.aimAngle > (-165):
@@ -60,7 +60,10 @@ class Worm(PhysicalSphere):
         y2 = self.y + self.radius - self.height
         screen.blit(self.image, (x2, y2))
         # affiche sa hitbox
-        # pg.draw.circle(screen, (255, 10, 10), (self.x, self.y), self.radius, width=2)
+        if self.stuckGround:
+            pg.draw.circle(screen, (255, 10, 10), (self.x, self.y), self.radius, width=2)
+        else:
+            pg.draw.circle(screen, (200, 200, 10), (self.x, self.y), self.radius, width=2)
         
         # affiche les points de vie des worms
         text = view.font_small.render(str(self.hp), True, pg.Color("white"))
@@ -122,15 +125,16 @@ class Worm(PhysicalSphere):
         s = pg.Surface((1000,750))
         pg.draw.polygon(screen, color, [start_left, start_right, end_right, end_left])
 
-    
     def refreshState(self):
         pass
-        # if True:  # TODO : si on touche le sol, collision avec le terrain
+        # if self.stuckGround:
         #     self.state = WormState.GROUNDED
+            # print(True)
         # else:
-        #     self.state = WormState.AIRBORNE
+            # self.state = WormState.AIRBORNE
+            # print(False)
     
     def ejected(self, vec):
         self.deplacementVec = vec
-        self.state = WormState.AIRBORNE
+        self.stuckGround = False
 

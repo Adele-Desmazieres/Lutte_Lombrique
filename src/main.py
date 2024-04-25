@@ -95,7 +95,13 @@ def mainloop(game, view):
         if len(game.worms) <= 1:
             print("Fin de la partie")
             running = False
-
+        
+        for w in game.worms:
+            w.updatePos(game.terrain)
+            
+        for o in game.objects:
+            o.updatePos(game.terrain)
+        
         view.draw(game)
 
         game.clock.tick(40)

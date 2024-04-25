@@ -41,7 +41,7 @@ class Model:
     
         # TODO : plusieurs worms appartenant à un joueur et gerer le chgt de tour
         for i in range(Settings.NUMBEROFPLAYERS):
-            w = Worm((i + 1) * 50, 100)
+            w = Worm((i + 1) * 200, 100)
             self.worms.append(w)
     
     def setView(self, view):

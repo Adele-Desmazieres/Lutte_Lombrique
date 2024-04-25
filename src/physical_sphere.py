@@ -12,34 +12,35 @@ class PhysicalSphere:
         self.y = y
         self.radius = radius
         self.deplacementVec = Vector(0, 0)
+        self.stuckGround = False
 
-    def moveFree(self, terrain):
-        self.deplacementVec.add(self.gravityVector)
-        self.handleCollision(terrain)
-        # print(self.deplacementVec)
-        self.x += self.deplacementVec.vx
-        self.y += self.deplacementVec.vy
+    def updatePos(self, terrain):
+        if not self.stuckGround:
+            self.deplacementVec.add(self.gravityVector)
+            self.handleCollision(terrain)
+            self.x += self.deplacementVec.vx
+            self.y += self.deplacementVec.vy
 
     def handleCollision(self, terrain):
-        stuckGround = False
-        if (self.x + self.radius + self.deplacementVec.vx > Settings.XMAX) or (
-                self.x - self.radius + self.deplacementVec.vx < Settings.XMIN):
-            self.deplacementVec.vx = -self.deplacementVec.vx * self.bouncingAbsorption
-            self.deplacementVec.vy *= self.bouncingAbsorption
+        self.stuckGround = False
+        # if (self.x + self.radius + self.deplacementVec.vx > Settings.XMAX) or (
+        #         self.x - self.radius + self.deplacementVec.vx < Settings.XMIN):
+        #     self.deplacementVec.vx = -self.deplacementVec.vx * self.bouncingAbsorption
+        #     self.deplacementVec.vy *= self.bouncingAbsorption
 
-        if (self.y + self.radius + self.deplacementVec.vy > Settings.YMAX) or (
-                self.y - self.radius + self.deplacementVec.vy < Settings.YMIN):
-            if (self.y + self.radius + self.deplacementVec.vy > Settings.YMAX) and (self.deplacementVec.vy < 2):
-                stuckGround = True
-            self.deplacementVec.vx *= self.bouncingAbsorption
-            self.deplacementVec.vy = -self.deplacementVec.vy * self.bouncingAbsorption
-
+        # if (self.y + self.radius + self.deplacementVec.vy > Settings.YMAX) or (
+        #         self.y - self.radius + self.deplacementVec.vy < Settings.YMIN):
+        #     if (self.y + self.radius + self.deplacementVec.vy > Settings.YMAX) and (self.deplacementVec.vy < 2):
+        #         self.stuckGround = True
+        #     self.deplacementVec.vx *= self.bouncingAbsorption
+        #     self.deplacementVec.vy = -self.deplacementVec.vy * self.bouncingAbsorption
+            
         for surface in terrain.surfaces:
             if self.intersects(surface):
                 self.terrainCollision(surface)
                 break
-
-        if stuckGround:
+            
+        if self.stuckGround:
             self.deplacementVec.vx = 0
             self.deplacementVec.vy = 0
 
@@ -64,17 +65,23 @@ class PhysicalSphere:
         self.deplacementVec.vy = speed * math.sin(angle_reflected) * self.bouncingAbsorption
 
         # Calcul du déplacement nécessaire pour éloigner la sphère du point de collision
-        overlap = self.radius - self.distanceToSurface(surface) + 0.1
+        dist = self.distanceToSurface(surface)
+        overlap = self.radius - dist + 0.1
         if overlap > 0:  # Ajuster s'il y a chevauchement
+            # print("here")
             self.x += math.cos(angle_normal) * overlap
             self.y += math.sin(angle_normal) * overlap
+            if (speed < 1 and dist < self.radius + 2):
+                # print("YES")
+                self.stuckGround = True
         else:
+            # print("there")
             # Réduire la vitesse pour éviter que les corrections répétées ne causent des tremblements
             self.deplacementVec.vx *= 0.5
             self.deplacementVec.vy *= 0.5
 
     def intersects(self, surface):
-        # Distance à la surface (redondant mes on a besoin des éléments du calcul)
+        # Distance à la surface (redondant mais on a besoin des éléments du calcul)
         x1, y1 = surface.p
         x2, y2 = surface.q
 
