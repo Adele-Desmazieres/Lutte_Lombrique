@@ -30,15 +30,15 @@ class Worm(PhysicalSphere):
         self.hp -= damage
 
     def moveRight(self):
-        if self.stuckGround:
+        # if self.stuckGround:
             self.x += self.slideSpeed
 
     def moveLeft(self):
-        if self.stuckGround:
+        # if self.stuckGround:
             self.x -= self.slideSpeed
 
     def jump(self):
-        if self.stuckGround:
+        # if self.stuckGround:
             self.deplacementVec.vy = Settings.JUMPPOWER
             self.stuckGround = False
 

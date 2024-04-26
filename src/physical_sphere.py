@@ -15,7 +15,7 @@ class PhysicalSphere:
         self.stuckGround = False
 
     def updatePos(self, terrain):
-        if not self.stuckGround:
+        # if not self.stuckGround:
             self.deplacementVec.add(self.gravityVector)
             self.handleCollision(terrain)
             self.x += self.deplacementVec.vx
