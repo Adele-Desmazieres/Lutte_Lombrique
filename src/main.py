@@ -66,10 +66,6 @@ def mainloop(game, view):
 
                 if pressed[pg.K_SPACE]:
                     game.worms[game.current_worm_id].charge()
-
-
-        for i in range(len(game.worms)):
-            game.worms[i].refreshState()
         
         # TODO : sortir ca du main si possible
         for obj in game.objects:

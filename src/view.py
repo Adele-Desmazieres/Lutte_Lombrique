@@ -85,7 +85,7 @@ class View:
             pg.draw.line(screen, (10, 10, 10), s.p, s.q, width=3)
     
         for w in game.worms:
-            w.draw(screen, self)
+            w.draw(self, screen, game.isCurrentWorm(w))
     
         for o in game.objects:
             o.draw(screen)
@@ -99,4 +99,18 @@ class View:
     
         pg.display.flip()
     
+    def draw_outline(self, img, coords):
+        outline = pg.mask.from_surface(img).outline()
+        outline_image = pg.Surface(img.get_size()).convert_alpha()
+        outline_image.fill((0,0,0,0))
+        for point in outline:
+            outline_image.set_at(point, (255, 255, 255))
+        # return outline_image
+        x,y = coords
+        self.screen.blit(outline_image, (x+1, y  ))
+        self.screen.blit(outline_image, (x  , y+1))
+        self.screen.blit(outline_image, (x-1, y  ))
+        self.screen.blit(outline_image, (x  , y-1))
+        # print(True)
+        
     

@@ -76,3 +76,6 @@ class Model:
     
     def getCurrentWorm(self):
         return self.worms[self.current_worm_id]
+    
+    def isCurrentWorm(self, worm):
+        return worm == self.getCurrentWorm()

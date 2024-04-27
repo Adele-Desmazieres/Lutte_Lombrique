@@ -15,7 +15,7 @@ class PhysicalSphere:
         self.stuckGround = False
 
     def updatePos(self, terrain):
-        # if not self.stuckGround:
+        if not self.stuckGround:
             self.deplacementVec.add(self.gravityVector)
             self.handleCollision(terrain)
             self.x += self.deplacementVec.vx
@@ -67,18 +67,17 @@ class PhysicalSphere:
         # Calcul du déplacement nécessaire pour éloigner la sphère du point de collision
         dist = self.distanceToSurface(surface)
         overlap = self.radius - dist + 0.1
+        
         if overlap > 0:  # Ajuster s'il y a chevauchement
-            # print("here")
             self.x += math.cos(angle_normal) * overlap
             self.y += math.sin(angle_normal) * overlap
-            if (speed < 1 and dist < self.radius + 2):
-                # print("YES")
-                self.stuckGround = True
         else:
-            # print("there")
             # Réduire la vitesse pour éviter que les corrections répétées ne causent des tremblements
             self.deplacementVec.vx *= 0.5
             self.deplacementVec.vy *= 0.5
+            
+        if (speed < 1 and dist < self.radius + 2):
+            self.stuckGround = True
 
     def intersects(self, surface):
         # Distance à la surface (redondant mais on a besoin des éléments du calcul)

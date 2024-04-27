@@ -30,16 +30,16 @@ class Worm(PhysicalSphere):
         self.hp -= damage
 
     def moveRight(self):
-        # if self.stuckGround:
+        if self.stuckGround:
             self.x += self.slideSpeed
 
     def moveLeft(self):
-        # if self.stuckGround:
+        if self.stuckGround:
             self.x -= self.slideSpeed
 
     def jump(self):
-        # if self.stuckGround:
-            self.deplacementVec.vy = Settings.JUMPPOWER
+        if self.stuckGround:
+            self.deplacementVec.vy = -Settings.JUMPPOWER
             self.stuckGround = False
 
     def aimLeft(self):
@@ -54,11 +54,14 @@ class Worm(PhysicalSphere):
         if self.powerCharge < Settings.MAX_POWER_CHARGE:
             self.powerCharge += 2
 
-    def draw(self, screen, view):
+    def draw(self, view, screen, outline=False):
         # affiche le worm
         x2 = self.x + self.radius - self.width
         y2 = self.y + self.radius - self.height
+        if outline:
+            view.draw_outline(self.image, (x2, y2))
         screen.blit(self.image, (x2, y2))
+        
         # affiche sa hitbox
         if self.stuckGround:
             pg.draw.circle(screen, (255, 10, 10), (self.x, self.y), self.radius, width=2)
@@ -124,15 +127,6 @@ class Worm(PhysicalSphere):
         
         s = pg.Surface((1000,750))
         pg.draw.polygon(screen, color, [start_left, start_right, end_right, end_left])
-
-    def refreshState(self):
-        pass
-        # if self.stuckGround:
-        #     self.state = WormState.GROUNDED
-            # print(True)
-        # else:
-            # self.state = WormState.AIRBORNE
-            # print(False)
     
     def ejected(self, vec):
         self.deplacementVec = vec
