@@ -51,9 +51,9 @@ def mainloop(game, view):
             
             if game.inventoryState == InventoryState.Closed:
                 if pressed[pg.K_q]:
-                    game.worms[game.current_worm_id].moveLeft()
+                    game.worms[game.current_worm_id].moveLeft(game.terrain)
                 elif pressed[pg.K_d]:
-                    game.worms[game.current_worm_id].moveRight()
+                    game.worms[game.current_worm_id].moveRight(game.terrain)
                     
             elif game.inventory.currentItem() in game.rangedWeapons:
                 if pressed[pg.K_q]:

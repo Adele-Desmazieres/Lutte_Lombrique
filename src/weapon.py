@@ -32,6 +32,7 @@ class PneumaticDrill(Utility):
 class Weapon:
     def __init__(self, damage):
         self.damage = damage
+    
 
 
 class Grenade(Weapon, PhysicalSphere):
@@ -44,7 +45,7 @@ class Grenade(Weapon, PhysicalSphere):
     def __init__(self, x, y, angle, power):
         Weapon.__init__(self, 50)
         PhysicalSphere.__init__(self, x, y, self.radius)
-        power /= 1.3  # divided by 1.3 because max power is 77
+        # power /= 1.3  # divided by 1.3 because max power is 77
         self.deplacementVec.vy = math.sin(math.radians(angle)) * power
         self.deplacementVec.vx = math.cos(math.radians(angle)) * power
         self.creation_tick = pg.time.get_ticks()
@@ -117,8 +118,8 @@ class Bazooka(Weapon, PhysicalSphere):
         self.collisionDetected = False
         self.collisionPoint = (0, 0)
 
-    def explode(self, worms):
-        for w in worms:
+    def explode(self, game):
+        for w in game.worms:
             x, y = self.collisionPoint
             distance = math.sqrt((w.x - x) ** 2 + (w.y - y) ** 2)
             if distance <= self.explosionRadius:
