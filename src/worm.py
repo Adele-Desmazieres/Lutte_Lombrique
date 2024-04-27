@@ -5,10 +5,6 @@ from enum import Enum
 from physical_sphere import *
 from settings import *
 
-# class WormState(Enum):
-#     GROUNDED = 0
-#     AIRBORNE = 1
-
 
 class Worm(PhysicalSphere):
     slideSpeed = 4
@@ -18,7 +14,6 @@ class Worm(PhysicalSphere):
 
     def __init__(self, x, y):
         PhysicalSphere.__init__(self, x, y, 10)
-        # self.state = WormState.GROUNDED
         self.bouncingAbsorption = 0.4
         self.hp = 100
         self.image = pg.image.load(Settings.WORM_IMG_PATH)
@@ -99,14 +94,6 @@ class Worm(PhysicalSphere):
         pg.draw.polygon(screen, color, [start_left, start_right, end_right, end_left])
     
     def draw_line_of_sight(self, screen):
-        # deltax = math.cos(math.radians(self.aimAngle%360)) * (Settings.MAX_POWER_CHARGE-1)
-        # deltay = math.sin(math.radians(self.aimAngle%360)) * (Settings.MAX_POWER_CHARGE-1)
-        
-        # endx = self.x + deltax
-        # endy = self.y + deltay
-        
-        # pg.draw.line(screen, color=pg.Color('red'), start_pos=(self.x, self.y), end_pos=(endx, endy), width=2)
-        
         color = (200, 200, 200, 0.5)
 
         end_x = self.x + math.cos(math.radians(self.aimAngle)) * Settings.MAX_POWER_CHARGE
