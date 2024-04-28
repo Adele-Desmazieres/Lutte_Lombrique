@@ -24,7 +24,6 @@ class Explosive:
                 x = self.x
                 y = self.y + self.radius
 
-                print("distance : {} / explosion radius : {}".format(distance, self.explosionRadius))
                 # perd des points de vie
                 w.loseHp((int)(self.damage * (1 - distance / self.explosionRadius)))
 

@@ -42,7 +42,8 @@ class Model:
     
         # TODO : plusieurs worms appartenant à un joueur et gerer le chgt de tour
         for i in range(Settings.NUMBEROFPLAYERS * Settings.WORMSBYPLAYER):
-            w = Worm(random.randint(100, Settings.XMAX - 100), 100)
+            player_index = i % Settings.NUMBEROFPLAYERS
+            w = Worm(random.randint(100, Settings.XMAX - 100), 100, player_index)
             self.worms.append(w)
     
     def setView(self, view):
