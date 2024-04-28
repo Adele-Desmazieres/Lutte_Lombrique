@@ -1,3 +1,4 @@
+import random
 from enum import Enum
 from map2D import *
 from terrain import *
@@ -41,7 +42,7 @@ class Model:
     
         # TODO : plusieurs worms appartenant à un joueur et gerer le chgt de tour
         for i in range(Settings.NUMBEROFPLAYERS * Settings.WORMSBYPLAYER):
-            w = Worm((i + 1) * 200, 100)
+            w = Worm(random.randint(100, Settings.XMAX - 100), 100)
             self.worms.append(w)
     
     def setView(self, view):
