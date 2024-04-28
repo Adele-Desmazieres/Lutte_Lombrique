@@ -69,16 +69,16 @@ class Worm(PhysicalSphere):
     
     def moveOnTopOfSurface(self, surface):
         closest_point = closest_point_on_line(surface, (self.x, self.y))
-        direction_vector_x = closest_point[0] - self.x
-        direction_vector_y = closest_point[1] - self.y
+        direction_vector_x = self.x - closest_point[0]
+        direction_vector_y = self.y - closest_point[1]
         
         # print("Vecteur directeur x : ", direction_vector_x)
         # print("Vecteur directeur y : ", direction_vector_y)
         
         distance = math.sqrt(direction_vector_x ** 2 + direction_vector_y ** 2)
         scale_factor = self.radius / distance
-        new_sphere_center_x = closest_point[0] + scale_factor * -direction_vector_x
-        new_sphere_center_y = closest_point[1] + scale_factor * -direction_vector_y
+        new_sphere_center_x = closest_point[0] + scale_factor * direction_vector_x
+        new_sphere_center_y = closest_point[1] + scale_factor * direction_vector_y
         return (new_sphere_center_x, new_sphere_center_y)
         
     def jump(self):
