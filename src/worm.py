@@ -133,6 +133,18 @@ class Worm(PhysicalSphere):
         # else:
             # self.state = WormState.AIRBORNE
             # print(False)
+
+    def explode(self, worms):
+        for w in worms:
+            distance = math.sqrt((w.x - self.x) ** 2 + (w.y - self.y) ** 2)
+            if distance <= 30:
+                w.loseHp(10)
+                if distance > 0:
+                    # TODO : rendre la force proportionnelle à la distance ? force_magnitude = (self.explosionRadius - distance) / self.explosionRadius
+                    force_magnitude = 10
+                    angle_to_worm = math.atan2(w.y - self.y, w.x - self.x)
+                    w.deplacementVec.vx += math.cos(angle_to_worm) * force_magnitude
+                    w.deplacementVec.vy += math.sin(angle_to_worm) * force_magnitude
     
     def ejected(self, vec):
         self.deplacementVec = vec

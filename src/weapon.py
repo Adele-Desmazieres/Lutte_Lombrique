@@ -129,7 +129,6 @@ class Bazooka(Weapon, PhysicalSphere):
                     angle_to_worm = math.atan2(w.y - y, w.x - x)
                     w.deplacementVec.vx += math.cos(angle_to_worm) * force_magnitude
                     w.deplacementVec.vy += math.sin(angle_to_worm) * force_magnitude
-        # todo : passer le terrain en paramètre et reprendre la même logique pour casser les bouts de terrain
 
     # TODO cette fonction doit être la copie quasi exacte d'handle collision mais passe X à true si collision
     def handleCollision(self, terrain):

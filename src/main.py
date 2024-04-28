@@ -90,6 +90,11 @@ def mainloop(game, view):
         for w in game.worms:
             if w.hp <= 0:
                 game.worms.remove(w)
+                Explosion.draw_explosion(screen, (w.x, w.y), 30)
+                w.explode(game.worms)
+
+                # TODO : explosion
+                # TODO  : worms.explode()
 
         # TODO: si plus qu'un seul wormms, lui attribuer la victoire
         if len(game.worms) <= 1:

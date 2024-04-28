@@ -40,7 +40,7 @@ class Model:
         self.initTerrain()
     
         # TODO : plusieurs worms appartenant à un joueur et gerer le chgt de tour
-        for i in range(Settings.NUMBEROFPLAYERS):
+        for i in range(Settings.NUMBEROFPLAYERS * Settings.WORMSBYPLAYER):
             w = Worm((i + 1) * 200, 100)
             self.worms.append(w)
     
