@@ -84,6 +84,7 @@ def mainloop(game, view):
                     game.state = GameState.INTERACTIVE
 
         for w in game.worms:
+            w.refreshState()
             if w.hp <= 0:
                 game.worms.remove(w)
                 if w.shouldExplode:

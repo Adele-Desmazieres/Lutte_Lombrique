@@ -92,12 +92,12 @@ class Worm(PhysicalSphere, Explosive):
             self.stuckGround = False
 
     def aimLeft(self):
-        if self.aimAngle > (-165):
-            self.aimAngle -= 1
+        # if self.aimAngle > (-165):
+        self.aimAngle -= 1
 
     def aimRight(self):
-        if self.aimAngle < (-15):
-            self.aimAngle += 1
+        # if self.aimAngle < (-15):
+        self.aimAngle += 1
 
     def charge(self):
         if self.powerCharge < Settings.MAX_POWER_CHARGE:
