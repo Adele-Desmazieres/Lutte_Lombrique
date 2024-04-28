@@ -21,6 +21,7 @@ class Worm(PhysicalSphere, Explosive):
         PhysicalSphere.__init__(self, x, y, 10)
         # self.state = WormState.GROUNDED
         self.bouncingAbsorption = 0.4
+        self.shouldExplode = True
         self.hp = 100
         self.damage = 10
         self.explosionRadius = 30
@@ -129,7 +130,13 @@ class Worm(PhysicalSphere, Explosive):
         pg.draw.polygon(screen, color, [start_left, start_right, end_right, end_left])
 
     def refreshState(self):
-        pass
+        if (self.x < Settings.XMIN
+            or self.x > Settings.XMAX
+            or self.y < Settings.YMIN
+            or self.y > Settings.YMAX):
+            self.hp = 0
+            self.shouldExplode = False
+
         # if self.stuckGround:
         #     self.state = WormState.GROUNDED
             # print(True)
