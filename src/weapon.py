@@ -73,7 +73,7 @@ class Bazooka(Weapon, PhysicalSphere, Explosive):
             distance = math.sqrt((w.x - x) ** 2 + (w.y - y) ** 2)
             if distance <= self.explosionRadius:
                 # perd des points de vie
-                w.loseHp(self.damage)
+                w.loseHp((int)(self.damage * (1 - distance / self.explosionRadius)))
 
                 # se fait propulser par la force de l'explosion
                 # calcul de l'angle par trigonométrie
