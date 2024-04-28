@@ -4,24 +4,29 @@ import numpy as np
 from enum import Enum
 from physical_sphere import *
 from settings import *
+from explosive import *
 from geometry import *
 
 
-class Worm(PhysicalSphere):
+class Worm(PhysicalSphere, Explosive):
     slideSpeed = 4
     radius = 10
     aimAngle = -90
     powerCharge = 0  # a percentage which will be divided by (100/max power)
     maxWalkableSlopeAngle = math.radians(65)
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, playerIndex):
         PhysicalSphere.__init__(self, x, y, 10)
         self.bouncingAbsorption = 0.4
+        self.shouldExplode = True
         self.hp = 100
+        self.damage = 10
+        self.explosionRadius = 30
         self.image = pg.image.load(Settings.WORM_IMG_PATH)
         self.width = self.radius * 1.5
         self.height = self.image.get_height() * self.width / self.image.get_width()
         self.image = pg.transform.scale(self.image, (self.width, self.height))
+        self.playerIndex = playerIndex
 
     def loseHp(self, damage):
         self.hp -= damage
@@ -113,7 +118,7 @@ class Worm(PhysicalSphere):
             pg.draw.circle(screen, (200, 200, 10), (self.x, self.y), self.radius, width=2)
         
         # affiche les points de vie des worms
-        text = view.font_small.render(str(self.hp), True, pg.Color("white"))
+        text = view.font_small.render(str(self.hp), True, Settings.HPCOLORS[self.playerIndex])
         textRect = text.get_rect() # create a rectangular object for the text surface object
         textRect.center = (self.x, self.y - self.radius*2) # set the center of the rectangular object
         screen.blit(text, textRect)
@@ -163,6 +168,14 @@ class Worm(PhysicalSphere):
         
         s = pg.Surface((1000,750))
         pg.draw.polygon(screen, color, [start_left, start_right, end_right, end_left])
+
+    def refreshState(self):
+        if (self.x < Settings.XMIN
+            or self.x > Settings.XMAX
+            or self.y < Settings.YMIN
+            or self.y > Settings.YMAX):
+            self.hp = 0
+            self.shouldExplode = False
     
     def ejected(self, vec):
         self.deplacementVec = vec
