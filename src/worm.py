@@ -4,13 +4,14 @@ import numpy as np
 from enum import Enum
 from physical_sphere import *
 from settings import *
+from explosive import *
 
 # class WormState(Enum):
 #     GROUNDED = 0
 #     AIRBORNE = 1
 
 
-class Worm(PhysicalSphere):
+class Worm(PhysicalSphere, Explosive):
     slideSpeed = 4
     radius = 10
     aimAngle = -90
@@ -21,6 +22,8 @@ class Worm(PhysicalSphere):
         # self.state = WormState.GROUNDED
         self.bouncingAbsorption = 0.4
         self.hp = 100
+        self.damage = 10
+        self.explosionRadius = 30
         self.image = pg.image.load(Settings.WORM_IMG_PATH)
         self.width = self.radius * 1.5
         self.height = self.image.get_height() * self.width / self.image.get_width()
@@ -133,18 +136,6 @@ class Worm(PhysicalSphere):
         # else:
             # self.state = WormState.AIRBORNE
             # print(False)
-
-    def explode(self, worms):
-        for w in worms:
-            distance = math.sqrt((w.x - self.x) ** 2 + (w.y - self.y) ** 2)
-            if distance <= 30:
-                w.loseHp(10)
-                if distance > 0:
-                    # TODO : rendre la force proportionnelle à la distance ? force_magnitude = (self.explosionRadius - distance) / self.explosionRadius
-                    force_magnitude = 10
-                    angle_to_worm = math.atan2(w.y - self.y, w.x - self.x)
-                    w.deplacementVec.vx += math.cos(angle_to_worm) * force_magnitude
-                    w.deplacementVec.vy += math.sin(angle_to_worm) * force_magnitude
     
     def ejected(self, vec):
         self.deplacementVec = vec

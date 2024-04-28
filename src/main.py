@@ -91,7 +91,7 @@ def mainloop(game, view):
             if w.hp <= 0:
                 game.worms.remove(w)
                 Explosion.draw_explosion(screen, (w.x, w.y), 30)
-                w.explode(game.worms)
+                w.explode(game)
 
                 # TODO : explosion
                 # TODO  : worms.explode()
