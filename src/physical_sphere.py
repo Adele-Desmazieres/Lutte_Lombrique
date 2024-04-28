@@ -20,26 +20,24 @@ class PhysicalSphere:
             self.handleCollision(terrain)
             self.x += self.deplacementVec.vx
             self.y += self.deplacementVec.vy
+    
+    def borderCollision(self):
+        if (self.x + self.radius + self.deplacementVec.vx > Settings.XMAX) or (
+                self.x - self.radius + self.deplacementVec.vx < Settings.XMIN):
+            self.deplacementVec.vx = -self.deplacementVec.vx * self.bouncingAbsorption
+            self.deplacementVec.vy *= self.bouncingAbsorption
 
+        if (self.y + self.radius + self.deplacementVec.vy > Settings.YMAX) or (
+                self.y - self.radius + self.deplacementVec.vy < Settings.YMIN):
+            self.deplacementVec.vx *= self.bouncingAbsorption
+            self.deplacementVec.vy = -self.deplacementVec.vy * self.bouncingAbsorption
+    
     def handleCollision(self, terrain):
-        self.stuckGround = False
-        # if (self.x + self.radius + self.deplacementVec.vx > Settings.XMAX) or (
-        #         self.x - self.radius + self.deplacementVec.vx < Settings.XMIN):
-        #     self.deplacementVec.vx = -self.deplacementVec.vx * self.bouncingAbsorption
-        #     self.deplacementVec.vy *= self.bouncingAbsorption
-
-        # if (self.y + self.radius + self.deplacementVec.vy > Settings.YMAX) or (
-        #         self.y - self.radius + self.deplacementVec.vy < Settings.YMIN):
-        #     if (self.y + self.radius + self.deplacementVec.vy > Settings.YMAX) and (self.deplacementVec.vy < 2):
-        #         self.stuckGround = True
-        #     self.deplacementVec.vx *= self.bouncingAbsorption
-        #     self.deplacementVec.vy = -self.deplacementVec.vy * self.bouncingAbsorption
-            
         for surface in terrain.surfaces:
             if self.intersects(surface):
                 self.terrainCollision(surface)
                 break
-            
+        
         if self.stuckGround:
             self.deplacementVec.vx = 0
             self.deplacementVec.vy = 0
@@ -79,6 +77,7 @@ class PhysicalSphere:
         if (speed < 1 and dist < self.radius + 2):
             self.stuckGround = True
 
+    # renvoie True s'il y a collision
     def intersects(self, surface):
         # Distance à la surface (redondant mais on a besoin des éléments du calcul)
         x1, y1 = surface.p

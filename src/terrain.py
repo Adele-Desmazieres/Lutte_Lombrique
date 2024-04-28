@@ -8,15 +8,11 @@ class SurfaceTerrain:
 	def __init__(self, p, q):
 		self.p = p
 		self.q = q
-		self.normal = None
 		self.vec = Vector(q[0]-p[0], q[1]-p[1])
+		self.angle = self.getAngleRadians()
 	
-	# def getEquation(p, q):
-	# 	if (q.x == p.x):
-	# 		return ()
-	# 	a = (q.y - p.y) / (q.x - p.x)
-	# 	b = p.y - a * p.x
-	# 	return (a, b)
+	def getAngleRadians(self):
+		return self.vec.getAngleRadians()
 	
 	def length(self):
 		return math.sqrt((self.q.y - self.p.y)**2 + (self.q.x - self.p.x)**2)
