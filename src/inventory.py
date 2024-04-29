@@ -6,7 +6,7 @@ class Inventory:
 
     def __init__(self):
         self.selectedItem = 0
-        self.items = [Item.PneumaticDrill, Item.Grenade, Item.Bazooka]
+        self.items = [Item.Grenade, Item.Bazooka, Item.Teleport, Item.PneumaticDrill]
         self.sprites = pg.image.load("../img/weapons.png")
 
     def changeSelectedItem(self):
@@ -19,11 +19,12 @@ class Inventory:
         if self.currentItem() == Item.Grenade:
             grenade = Grenade(worm.x, worm.y, worm.aimAngle, (worm.powerCharge / 10))
             objects.append(grenade)
-        elif self.currentItem() == Item.PneumaticDrill:
-            pass  # TODO : passer les coordonnées du worms en param
         elif self.currentItem() == Item.Bazooka:
             bazookaShot = Bazooka(worm.x, worm.y, worm.aimAngle)
             objects.append(bazookaShot)
+        elif self.currentItem() == Item.PneumaticDrill:
+            pass
+
 
         w1 = PhysicalSphere(worm.x, worm.y, 5)
         w1.deplacementVec.vy = 30

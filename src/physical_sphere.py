@@ -111,15 +111,15 @@ class PhysicalSphere:
         denomPos = denom > 0
         totalVx = self.x - pX
         totalVy = self.y - pY
-        sNumer = vectVx * totalVy - vectVy * totalVx
-        if (sNumer < 0) == denomPos:
+        vectNumer = vectVx * totalVy - vectVy * totalVx
+        if (vectNumer < 0) == denomPos:
             return False
 
-        tNumer = surfaceVx * totalVy - surfaceVy * totalVx
-        if (tNumer < 0) == denomPos:
+        surfaceNumer = surfaceVx * totalVy - surfaceVy * totalVx
+        if (surfaceNumer < 0) == denomPos:
             return False
 
-        if ((sNumer > denom) == denomPos) or ((tNumer > denom) == denomPos):
+        if ((surfaceNumer > denom) == denomPos) or ((vectNumer > denom) == denomPos):
             return False
 
         return True

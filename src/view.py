@@ -96,6 +96,15 @@ class View:
     
         if game.inventory.currentItem() in game.rangedWeapons:
             game.worms[game.current_worm_id].draw_aiming_cursor(screen)
+
+        maxHeight = Settings.YMAX
+        waterHeight = maxHeight * (game.numberOfTurns / Settings.MAX_TURNS_NUMBER)  # Hauteur du filtre basée sur le nombre de tours
+        waterSurface = pg.Surface((screen.get_width(), maxHeight))
+        waterSurface.set_alpha(128)  # Opacité
+        waterSurface.fill((0, 0, 255))
+
+        screen.blit(waterSurface, (0, maxHeight - waterHeight),
+                    area=(0, maxHeight - waterHeight, screen.get_width(), waterHeight))
     
         pg.display.flip()
     

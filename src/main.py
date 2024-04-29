@@ -20,6 +20,7 @@ def endTurn(game):
     game.turnTimer = 0
     game.inventoryState = InventoryState.Closed
     game.worm_has_fired = False
+    game.numberOfTurns += 1
     print("Nouveau tour")
 
 def mainloop(game, view):
@@ -96,7 +97,7 @@ def mainloop(game, view):
                     game.state = GameState.INTERACTIVE
 
         for w in game.worms:
-            w.refreshState()
+            w.refreshState(game)
             playerIndex = w.playerIndex
             wormIndex = game.worms.index(w)
             if w.hp <= 0:

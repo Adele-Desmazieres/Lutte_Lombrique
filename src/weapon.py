@@ -6,10 +6,10 @@ from geometry import *
 from explosive import *
 
 class Item(Enum):
-    PneumaticDrill = 0
-    Grenade = 1
-    Bazooka = 2
-
+    Grenade = 0
+    Bazooka = 1
+    Teleport = 2
+    PneumaticDrill = 3
 
 # class WeaponType(Enum):
 #	Launched = 0

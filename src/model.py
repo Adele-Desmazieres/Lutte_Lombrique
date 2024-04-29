@@ -29,6 +29,7 @@ class Model:
         self.worm_has_fired = False
         self.objects = []
         self.rangedWeapons = [Item.Grenade, Item.Bazooka]
+        self.numberOfTurns = 0
         
         self.inventory = Inventory()
         self.inventoryState = InventoryState.Closed
