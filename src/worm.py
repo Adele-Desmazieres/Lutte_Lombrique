@@ -14,6 +14,7 @@ class Worm(PhysicalSphere, Explosive):
     aimAngle = -90
     powerCharge = 0  # a percentage which will be divided by (100/max power)
     maxWalkableSlopeAngle = math.radians(65)
+    id = -1
 
     def __init__(self, x, y, playerIndex):
         PhysicalSphere.__init__(self, x, y, 10)

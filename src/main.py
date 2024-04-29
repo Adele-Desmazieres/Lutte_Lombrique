@@ -12,10 +12,21 @@ from explosion import *
 from model import *
 from view import *
 
+def endTurn(game):
+    game.worms[game.current_worm_id].powerCharge = 0
+    game.worms[game.current_worm_id].aimAngle = -90
+    game.current_worm_id = (game.current_worm_id + 1) % len(game.worms)
+    print("current_worm_id : {}".format(game.current_worm_id))
+    game.turnTimer = 0
+    game.inventoryState = InventoryState.Closed
+    game.worm_has_fired = False
+    print("Nouveau tour")
 
 def mainloop(game, view):
     
     running = True
+    actualPlayers = [n for n in range(Settings.NUMBEROFPLAYERS)]
+    deadPlayersThisTurn = []
     
     while running:
         events = pg.event.get()
@@ -85,17 +96,34 @@ def mainloop(game, view):
 
         for w in game.worms:
             w.refreshState()
+            playerIndex = w.playerIndex
+            wormIndex = game.worms.index(w)
             if w.hp <= 0:
                 game.worms.remove(w)
                 if w.shouldExplode:
                     Explosion.draw_explosion(screen, (w.x, w.y), 30)
                     w.explode(game)
 
-                # TODO : explosion
-                # TODO  : worms.explode()
+                if len([w for w in game.worms if w.playerIndex == playerIndex]) == 0:
+                    actualPlayers.remove(playerIndex)
+                    deadPlayersThisTurn = [playerIndex]
+
+                if wormIndex == game.current_worm_id:
+                    endTurn(game)
+
 
         # TODO: si plus qu'un seul wormms, lui attribuer la victoire
         if len(game.worms) <= 1:
+            winners = [player for player in actualPlayers if player not in deadPlayersThisTurn]
+            if len(winners) == 0:
+                winners = deadPlayersThisTurn
+            if len(winners) > 1:
+                print("Égalité ! Les joueurs gagnants sont : ")
+                for player in winners:
+                    print("Joueur {}".format(player))
+            else:
+                print("Victoire du joueur {}".format(winners[0]))
+
             print("Fin de la partie")
             running = False
         
@@ -110,14 +138,9 @@ def mainloop(game, view):
         game.clock.tick(40)
         game.turnTimer += 40
         if (game.turnTimer >= Settings.NUMBERMILLISECONDSTURN) or game.worm_has_fired:
-            game.worms[game.current_worm_id].powerCharge = 0
-            game.worms[game.current_worm_id].aimAngle = -90
-            game.current_worm_id = (game.current_worm_id + 1) % len(game.worms)
-            print("current_worm_id : {}".format(game.current_worm_id))
-            game.turnTimer = 0
-            game.inventoryState = InventoryState.Closed
-            game.worm_has_fired = False
-            print("Nouveau tour")
+            endTurn(game)
+            deadPlayersThisTurn = []
+
 
     print("Fermeture du programme")
     pg.quit()
