@@ -97,7 +97,6 @@ class PhysicalSphere:
         within_segment = (min(x1, x2) <= nearest_x <= max(x1, x2)) and (min(y1, y2) <= nearest_y <= max(y1, y2))
 
         return within_segment
-
     def line_intersect(self, vect, surface):
         vectVx = vect.vx
         vectVy = vect.vy
