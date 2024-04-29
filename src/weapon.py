@@ -113,7 +113,7 @@ class Bazooka(Weapon, PhysicalSphere, Explosive):
 
 
         for surface in terrain.surfaces:
-            if self.intersects(surface):
+            if self.line_intersect(self.deplacementVec, surface):
                 self.collisionDetected = True
                 self.collisionPoint = (self.x, self.y)
                 break

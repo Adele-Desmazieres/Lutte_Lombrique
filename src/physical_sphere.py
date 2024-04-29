@@ -98,4 +98,29 @@ class PhysicalSphere:
 
         return within_segment
 
+    def line_intersect(self, vect, surface):
+        vectVx = vect.vx
+        vectVy = vect.vy
+        surfaceVx = surface.vec.vx
+        surfaceVy = surface.vec.vy
+        pX, pY = surface.p
 
+        denom = vectVx * surfaceVy - surfaceVx * vectVy
+        if denom == 0:
+            return False
+
+        denomPos = denom > 0
+        totalVx = self.x - pX
+        totalVy = self.y - pY
+        sNumer = vectVx * totalVy - vectVy * totalVx
+        if (sNumer < 0) == denomPos:
+            return False
+
+        tNumer = surfaceVx * totalVy - surfaceVy * totalVx
+        if (tNumer < 0) == denomPos:
+            return False
+
+        if ((sNumer > denom) == denomPos) or ((tNumer > denom) == denomPos):
+            return False
+
+        return True
