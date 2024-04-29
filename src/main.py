@@ -29,6 +29,7 @@ def mainloop(game, view):
     deadPlayersThisTurn = []
     
     while running:
+        skipDrawing = False
         events = pg.event.get()
         pressed = pg.key.get_pressed()
 
@@ -109,7 +110,7 @@ def mainloop(game, view):
                     deadPlayersThisTurn = [playerIndex]
 
                 if wormIndex == game.current_worm_id:
-                    endTurn(game)
+                    skipDrawing = True
 
 
         # TODO: si plus qu'un seul wormms, lui attribuer la victoire
@@ -132,8 +133,9 @@ def mainloop(game, view):
             
         for o in game.objects:
             o.updatePos(game.terrain)
-        
-        view.draw(game)
+
+        if not skipDrawing:
+            view.draw(game)
 
         game.clock.tick(40)
         game.turnTimer += 40
