@@ -7,6 +7,7 @@ class Inventory:
     def __init__(self):
         self.selectedItem = 0
         self.items = [Item.Grenade, Item.Bazooka, Item.Teleport, Item.PneumaticDrill]
+        self.itemsSprites = [1, 0, 21, 52]
         self.sprites = pg.image.load("../img/weapons.png")
 
     def changeSelectedItem(self):
@@ -30,9 +31,10 @@ class Inventory:
         w1.deplacementVec.vy = 30
         return w1
 
-    def draw(self, screen):
-        y = math.floor((32 * self.selectedItem) / 256)
-        x = (32 * self.selectedItem) % 256
+    def draw(self, screen): # TODO : modifier les images
+        sprite = self.itemsSprites[self.selectedItem]
+        y = math.floor((32 * sprite) / 256)
+        x = (32 * sprite) % 256
         portion_rect = pg.Rect(x, 32 * y, 32, 32)  # (400, 400),
         image_portion = self.sprites.subsurface(portion_rect)
         maxX, maxY = pg.display.get_surface().get_size()
