@@ -59,7 +59,7 @@ def mainloop(game, view):
                 if event.type == pg.KEYUP and game.inventoryState == InventoryState.Opened:
                     if event.key == pg.K_SPACE:
                         game.inventory.triggerCurrentItem(game.worms[game.current_worm_id], game.objects)
-                        game.state = GameState.ANIMATION # TODO : seulement pour les weapons ou les rangedWeapons?
+                        game.state = GameState.ANIMATION
                         game.worm_has_fired = True
             
             if game.inventoryState == InventoryState.Closed:
@@ -68,7 +68,7 @@ def mainloop(game, view):
                 elif pressed[pg.K_d]:
                     game.worms[game.current_worm_id].moveRight(game.terrain)
                     
-            elif game.inventory.currentItem() in game.rangedWeapons:
+            elif game.inventory.currentItem() in game.ranged:
                 if pressed[pg.K_q]:
                     game.worms[game.current_worm_id].aimLeft()
                     # print(game.worms[game.current_worm_id].aimAngle)
@@ -90,9 +90,18 @@ def mainloop(game, view):
                     game.objects.remove(obj)
                     game.state = GameState.INTERACTIVE
             if isinstance(obj, Bazooka):
-                if obj.collisionDetected: # TODO : if collision
+                if obj.collisionDetected:
                     Explosion.draw_explosion(screen, obj.collisionPoint, obj.explosionRadius)
                     obj.explode(game)
+                    game.objects.remove(obj)
+                    game.state = GameState.INTERACTIVE
+            if isinstance(obj, PneumaticDrill):
+                if obj.collisionDetected:
+                    (x, y) = obj.collisionPoint
+                    obj.explode(game)
+                    for center in obj.centers:
+                        Explosion.draw_explosion(screen, center, obj.explosionRadius)
+
                     game.objects.remove(obj)
                     game.state = GameState.INTERACTIVE
 

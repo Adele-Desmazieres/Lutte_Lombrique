@@ -24,7 +24,8 @@ class Inventory:
             bazookaShot = Bazooka(worm.x, worm.y, worm.aimAngle)
             objects.append(bazookaShot)
         elif self.currentItem() == Item.PneumaticDrill:
-            pass
+            pneumaticDrill = PneumaticDrill(worm.x, worm.y, worm.aimAngle)
+            objects.append(pneumaticDrill)
 
 
         w1 = PhysicalSphere(worm.x, worm.y, 5)

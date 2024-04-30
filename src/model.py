@@ -28,7 +28,7 @@ class Model:
         self.current_worm_id = 0
         self.worm_has_fired = False
         self.objects = []
-        self.rangedWeapons = [Item.Grenade, Item.Bazooka]
+        self.ranged = [Item.Grenade, Item.Bazooka, Item.PneumaticDrill]
         self.numberOfTurns = 0
         
         self.inventory = Inventory()
