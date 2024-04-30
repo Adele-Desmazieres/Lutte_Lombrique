@@ -12,6 +12,30 @@ from explosion import *
 from model import *
 from view import *
 
+def show_end_game_screen(screen, winners):
+    screen.fill(Settings.BACKGROUNDCOLOR)
+    font = pg.font.Font(None, 36)
+
+    title = font.render("Gagnant(s)", True, (255, 0, 0))
+    screen.blit(title, (Settings.XMAX // 2 - title.get_width() // 2, 50))
+
+    startY = 150
+    for winner in winners:
+        text = font.render(f"Joueur {winner}", True, Settings.HPCOLORS[winner])
+        screen.blit(text, (Settings.XMAX // 2 - text.get_width() // 2, startY))
+        startY += 40
+
+    pg.display.flip()
+
+    waiting = True
+    while waiting:
+        for event in pg.event.get():
+            if event.type == pg.K_ESCAPE:
+                waiting = False
+                pg.quit()
+                quit()
+
+
 def endTurn(game):
     game.worms[game.current_worm_id].powerCharge = 0
     game.worms[game.current_worm_id].aimAngle = -90
@@ -137,6 +161,7 @@ def mainloop(game, view):
 
             print("Fin de la partie")
             running = False
+            show_end_game_screen(screen, winners)
         
         for w in game.worms:
             w.updatePos(game.terrain)
