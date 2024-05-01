@@ -82,9 +82,17 @@ def mainloop(game, view):
                        
                 if event.type == pg.KEYUP and game.inventoryState == InventoryState.Opened:
                     if event.key == pg.K_SPACE:
-                        game.inventory.triggerCurrentItem(game.worms[game.current_worm_id], game.objects)
-                        game.state = GameState.ANIMATION
-                        game.worm_has_fired = True
+                        if game.inventory.currentItem() == Item.Teleporter:
+                            x, y = pg.mouse.get_pos()
+                            objTp = Teleporter()
+                            objTp.teleport(x, y, game.worms[game.current_worm_id])
+                            game.worm_has_fired = True
+                            game.worms[game.current_worm_id].stuckGround = False
+                            game.worms[game.current_worm_id].updatePos(game.terrain)
+                        else:
+                            game.inventory.triggerCurrentItem(game.worms[game.current_worm_id], game.objects)
+                            game.state = GameState.ANIMATION
+                            game.worm_has_fired = True
             
             if game.inventoryState == InventoryState.Closed:
                 if pressed[pg.K_q]:

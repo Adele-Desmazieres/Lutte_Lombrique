@@ -14,8 +14,9 @@ class Explosive:
         pass
 
     def explode(self, game):
-        self.explode_worms(game.worms)
         self.explode_terrain(game)
+        self.explode_worms(game.worms)
+
 
     def explode_worms(self, worms):
         for w in worms:

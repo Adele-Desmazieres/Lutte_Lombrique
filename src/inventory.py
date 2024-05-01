@@ -6,7 +6,7 @@ class Inventory:
 
     def __init__(self):
         self.selectedItem = 0
-        self.items = [Item.Grenade, Item.Bazooka, Item.Teleport, Item.PneumaticDrill]
+        self.items = [Item.Grenade, Item.Bazooka, Item.Teleporter, Item.PneumaticDrill]
         self.itemsSprites = [1, 0, 21, 52]
         self.sprites = pg.image.load("../img/weapons.png")
 
