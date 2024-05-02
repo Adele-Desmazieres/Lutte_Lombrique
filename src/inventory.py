@@ -18,10 +18,10 @@ class Inventory:
 
     def triggerCurrentItem(self, worm, objects):
         if self.currentItem() == Item.Grenade:
-            grenade = Grenade(worm.x, worm.y, worm.aimAngle, (worm.powerCharge / 10))
+            grenade = Grenade(worm.x, worm.y, worm.aimAngle, worm.powerCharge)
             objects.append(grenade)
         elif self.currentItem() == Item.Bazooka:
-            bazookaShot = Bazooka(worm.x, worm.y, worm.aimAngle)
+            bazookaShot = Bazooka(worm.x, worm.y, worm.aimAngle, worm.powerCharge)
             objects.append(bazookaShot)
         elif self.currentItem() == Item.PneumaticDrill:
             pneumaticDrill = PneumaticDrill(worm.x, worm.y, worm.aimAngle)

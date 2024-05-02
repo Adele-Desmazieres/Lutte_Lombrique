@@ -17,7 +17,6 @@ class Explosive:
         self.explode_terrain(game)
         self.explode_worms(game.worms)
 
-
     def explode_worms(self, worms):
         for w in worms:
             distance = math.sqrt((w.x - self.x) ** 2 + (w.y - self.y) ** 2)

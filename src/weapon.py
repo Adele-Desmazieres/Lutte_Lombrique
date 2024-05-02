@@ -33,7 +33,7 @@ class Teleporter(Utility):
 class PneumaticDrill(Utility, PhysicalSphere, Explosive):
     radius = 8
     bouncingAbsorption = 0.6
-    explosionRadius = 50
+    explosionRadius = 20
     projection_force_max = 2 # Force minimale pour faire tomber le vers (qui autrement ne bouge pas si du terrain est détruit sous ses "pieds")
     projection_force_min = 1
 
@@ -149,12 +149,11 @@ class Grenade(Weapon, PhysicalSphere, Explosive):
     def __init__(self, x, y, angle, power):
         Weapon.__init__(self, 50)
         PhysicalSphere.__init__(self, x, y, self.radius)
-        # power /= 1.3  # divided by 1.3 because max power is 77
+        power = power / 10
         self.deplacementVec.vy = math.sin(math.radians(angle)) * power
         self.deplacementVec.vx = math.cos(math.radians(angle)) * power
         self.creation_tick = pg.time.get_ticks()
 
-    
     def draw(self, screen):
         pg.draw.circle(screen, (0, 255, 0), (self.x, self.y), self.radius)
 
@@ -163,11 +162,12 @@ class Bazooka(Weapon, PhysicalSphere, Explosive):
     bouncingAbsorption = 0.6
     explosionRadius = 50
 
-    def __init__(self, x, y, angle):
+    def __init__(self, x, y, angle, power):
         Weapon.__init__(self, 60)
         PhysicalSphere.__init__(self, x, y, self.radius)
-        self.deplacementVec.vy = math.sin(math.radians(angle)) * 30
-        self.deplacementVec.vx = math.cos(math.radians(angle)) * 30
+        power = power / 6
+        self.deplacementVec.vy = math.sin(math.radians(angle)) * power
+        self.deplacementVec.vx = math.cos(math.radians(angle)) * power
         self.collisionDetected = False
         self.collisionPoint = (0, 0)
 
@@ -200,27 +200,25 @@ class Bazooka(Weapon, PhysicalSphere, Explosive):
                 vy = projection_force * math.sin(projection_angle)
                 w.ejected(Vector(vx, vy))
 
-    # TODO cette fonction doit être la copie quasi exacte d'handle collision mais passe X à true si collision
     def handleCollision(self, terrain):
-        # TODO : ajouter en arguments les autres worms pour que leurs hitbox soient détéctées comme des collisions ?
         stuckGround = False
+        
         if (self.x + self.radius + self.deplacementVec.vx > Settings.XMAX) or (
                 self.x - self.radius + self.deplacementVec.vx < Settings.XMIN):
             self.collisionDetected = True
             self.collisionPoint = (self.x, self.y)
-            print("x = {}, y = {} ".format(self.x, self.y))
 
-        if (self.y + self.radius + self.deplacementVec.vy > Settings.YMAX) or (
+        elif (self.y + self.radius + self.deplacementVec.vy > Settings.YMAX) or (
                 self.y - self.radius + self.deplacementVec.vy < Settings.YMIN):
             self.collisionDetected = True
             self.collisionPoint = (self.x, self.y)
-
-
-        for surface in terrain.surfaces:
-            if self.line_intersect(self.deplacementVec, surface):
-                self.collisionDetected = True
-                self.collisionPoint = (self.x, self.y)
-                break
+            
+        else:
+            for surface in terrain.surfaces:
+                if self.line_intersect(self.deplacementVec, surface):
+                    self.collisionDetected = True
+                    self.collisionPoint = (self.x, self.y)
+                    break
 
         if stuckGround:
             self.deplacementVec.vx = 0

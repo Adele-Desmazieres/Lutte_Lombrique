@@ -30,10 +30,16 @@ def show_end_game_screen(screen, winners):
     waiting = True
     while waiting:
         for event in pg.event.get():
+            # stops the program when closing
+            if event.type == pg.QUIT:
+                waiting = False
+                    
             if event.type == pg.K_ESCAPE:
                 waiting = False
-                pg.quit()
-                quit()
+    
+    pg.quit()
+    quit()
+    
 
 
 def endTurn(game):
@@ -115,7 +121,7 @@ def mainloop(game, view):
         # TODO : sortir ca du main si possible
         for obj in game.objects:
             if isinstance(obj, Grenade):
-                if pg.time.get_ticks() - obj.creation_tick > 5000:
+                if pg.time.get_ticks() - obj.creation_tick > 3000:
                     # TODO: boom animation + appliquer dégâts au terrain + force répulsion worms
                     Explosion.draw_explosion(screen, (obj.x, obj.y), obj.explosionRadius)
                     obj.explode(game)
