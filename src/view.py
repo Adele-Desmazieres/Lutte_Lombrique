@@ -105,6 +105,14 @@ class View:
     
         if game.inventory.currentItem() in game.ranged:
             game.worms[game.current_worm_id].draw_aiming_cursor(screen)
+        
+        # affiche le timer du tour
+        t = (Settings.NUMBERMILLISECONDSTURN - game.turnTimer) // 1000
+        text = self.font_big.render(str(t), True, (250, 250, 250))
+        textRect = text.get_rect() # create a rectangular object for the text surface object
+        textRect.topleft = (10, 10) # set the position of the rectangular object
+        screen.blit(text, textRect)
+
     
         pg.display.flip()
     

@@ -44,7 +44,6 @@ def show_end_game_screen(screen, winners):
 
 def endTurn(game):
     game.worms[game.current_worm_id].powerCharge = 0
-    game.worms[game.current_worm_id].aimAngle = -90
     game.current_worm_id = (game.current_worm_id + 1) % len(game.worms)
     print("current_worm_id : {}".format(game.current_worm_id))
     game.turnTimer = 0
@@ -186,8 +185,8 @@ def mainloop(game, view):
         if not skipDrawing:
             view.draw(game)
 
-        game.clock.tick(40)
-        game.turnTimer += 40
+        framerate = game.clock.tick(40)
+        game.turnTimer += framerate
         if (game.turnTimer >= Settings.NUMBERMILLISECONDSTURN) or game.worm_has_fired:
             endTurn(game)
             deadPlayersThisTurn = []
@@ -200,7 +199,7 @@ def mainloop(game, view):
 
 def screenInit():
     screen = pg.display.set_mode((Settings.XMAX, Settings.YMAX), pg.RESIZABLE)
-    pg.display.set_caption("Lutte Lombrique")
+    pg.display.set_caption("Lutte Lombric")
     screen.fill(Settings.BACKGROUNDCOLOR)
     pg.display.flip()
     return screen

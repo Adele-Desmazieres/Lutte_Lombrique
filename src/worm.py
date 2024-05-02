@@ -11,13 +11,13 @@ from geometry import *
 class Worm(PhysicalSphere, Explosive):
     slideSpeed = 4
     radius = 10
-    aimAngle = -90
     powerCharge = 0  # a percentage which will be divided by (100/max power)
     maxWalkableSlopeAngle = math.radians(65)
     id = -1
 
     def __init__(self, x, y, playerIndex):
         PhysicalSphere.__init__(self, x, y, 10)
+        self.aimAngle = -90
         self.bouncingAbsorption = 0.4
         self.shouldExplode = True
         self.hp = 100
@@ -113,10 +113,10 @@ class Worm(PhysicalSphere, Explosive):
         screen.blit(self.image, (x2, y2))
 
         # affiche sa hitbox
-        if self.stuckGround:
-            pg.draw.circle(screen, (255, 10, 10), (self.x, self.y), self.radius, width=2)
-        else:
-            pg.draw.circle(screen, (200, 200, 10), (self.x, self.y), self.radius, width=2)
+        # if self.stuckGround:
+        #     pg.draw.circle(screen, (255, 10, 10), (self.x, self.y), self.radius, width=2)
+        # else:
+        #     pg.draw.circle(screen, (200, 200, 10), (self.x, self.y), self.radius, width=2)
 
         # affiche les points de vie des worms
         text = view.font_small.render(str(self.hp), True, Settings.HPCOLORS[self.playerIndex])
