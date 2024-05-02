@@ -39,4 +39,4 @@ Phase de tir
 
 ## Objectif
 
-L'objectif du jeu est de tuer tous les vers des adversaires avant qu'ils ne tuent les siens. Le jeu ne se joue qu'en local à plusieurs. 
+L'objectif du jeu est de tuer tous les vers des adversaires avant de se faire tuer par eux ou par l'eau qui monte. Le jeu se joue en local à plusieurs joueurs. 
