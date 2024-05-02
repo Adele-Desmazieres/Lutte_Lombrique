@@ -121,21 +121,26 @@ def mainloop(game, view):
         for obj in game.objects:
             if isinstance(obj, Grenade):
                 if pg.time.get_ticks() - obj.creation_tick > 3000:
-                    # TODO: boom animation + appliquer dégâts au terrain + force répulsion worms
                     Explosion.draw_explosion(screen, (obj.x, obj.y), obj.explosionRadius)
-                    obj.explode(game)
+                    obj.explode(game, [(obj.x, obj.y)])
                     game.objects.remove(obj)
                     game.state = GameState.INTERACTIVE
             if isinstance(obj, Bazooka):
                 if obj.collisionDetected:
                     Explosion.draw_explosion(screen, obj.collisionPoint, obj.explosionRadius)
-                    obj.explode(game)
+                    obj.explode(game, [obj.collisionPoint])
                     game.objects.remove(obj)
                     game.state = GameState.INTERACTIVE
             if isinstance(obj, PneumaticDrill):
                 if obj.collisionDetected:
                     (x, y) = obj.collisionPoint
-                    obj.explode(game)
+                    dx = obj.explosionRadius * math.cos(math.radians(obj.angle))
+                    dy = obj.explosionRadius * math.sin(math.radians(obj.angle))
+                    cX, cY = obj.collisionPoint
+                    centers = [(cX, cY),
+                                    (cX + dx, cY + dy),
+                                    (cX + 2 * dx, cY + 2 * dy)]
+                    obj.explode(game, centers)
                     for center in obj.centers:
                         Explosion.draw_explosion(screen, center, obj.explosionRadius)
 
