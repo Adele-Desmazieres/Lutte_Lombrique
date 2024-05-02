@@ -130,7 +130,7 @@ class PneumaticDrill(Utility, PhysicalSphere, Explosive):
     def draw(self, screen):
         for center in self.centers:
             x, y = center
-            print("({}, {})".format(x, y))
+            # print("({}, {})".format(x, y))
             pg.draw.circle(screen, (255, 0, 0), center, self.radius)
 
 
