@@ -48,6 +48,9 @@ class Explosive:
                     vx = projection_force * math.cos(projection_angle)
                     vy = projection_force * math.sin(projection_angle)
                     w.ejected(Vector(vx, vy))
+                
+                # met tous les vers en chute libre, au cas ou du terrain soit détruit sous eux
+                w.stuckGround = False
 
     def explode_terrain(self, game):
         newmap = [[game.map[i][j] for j in range(len(game.map[0]))] for i in range(len(game.map))]
