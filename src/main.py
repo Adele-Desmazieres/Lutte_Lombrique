@@ -77,10 +77,11 @@ def mainloop(game, view):
                     if game.inventoryState == InventoryState.Closed:
                         if event.key == pg.K_SPACE:
                             game.worms[game.current_worm_id].jump()
-                        elif event.key == pg.K_RSHIFT and not game.worm_has_fired:
-                            game.inventoryState = InventoryState.Opened
+                        elif event.key == pg.K_RSHIFT or event.key == pg.K_LSHIFT:
+                            if not game.worm_has_fired:
+                                game.inventoryState = InventoryState.Opened
                     else:
-                        if event.key == pg.K_RSHIFT:
+                        if event.key == pg.K_RSHIFT or event.key == pg.K_LSHIFT:
                             game.inventory.changeSelectedItem()
                         elif event.key == pg.K_BACKSPACE:
                             game.inventoryState = InventoryState.Closed

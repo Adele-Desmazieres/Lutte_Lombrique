@@ -109,7 +109,7 @@ class Worm(PhysicalSphere, Explosive):
         x2 = self.x + self.radius - self.width
         y2 = self.y + self.radius - self.height
         if outline:
-            view.draw_outline(self.image, (x2, y2))
+            view.draw_outline(self.image, (x2, y2), (255, 255, 255))
         screen.blit(self.image, (x2, y2))
 
         # affiche sa hitbox

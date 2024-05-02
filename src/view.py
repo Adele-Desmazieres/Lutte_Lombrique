@@ -33,6 +33,9 @@ class View:
         self.pg_sky_img = pg.transform.scale(self.pg_sky_img, (Settings.XMAX, Settings.YMAX))
         self.pg_sky_img.fill((50, 90, 50, 0), special_flags=pg.BLEND_RGBA_MULT)
         
+        self.target_img = pg.image.load(Settings.TARGET_IMG_PATH)
+        self.target_img = pg.transform.scale(self.target_img, (20, 20))
+        
     
     def update_terrain_img(self, game):
         cropped_img = pg.Surface((Settings.XMAX, Settings.YMAX), pg.SRCALPHA)
@@ -101,10 +104,18 @@ class View:
         
         if (game.hasInventoryOpened()):
             game.inventory.draw(screen)
-            game.getCurrentWorm().draw_line_of_sight(screen)
+            if game.inventory.currentItem() in game.ranged:
+                game.getCurrentWorm().draw_line_of_sight(screen)
     
         if game.inventory.currentItem() in game.ranged:
             game.worms[game.current_worm_id].draw_aiming_cursor(screen)
+        
+        # affiche le curseur
+        if (game.hasInventoryOpened()) and game.inventory.currentItem() not in game.ranged: 
+            self.draw_custom_cursor(self.target_img)
+        else:
+            pg.mouse.set_visible(True)
+            
         
         # affiche le timer du tour
         t = (Settings.NUMBERMILLISECONDSTURN - game.turnTimer) // 1000
@@ -112,21 +123,28 @@ class View:
         textRect = text.get_rect() # create a rectangular object for the text surface object
         textRect.topleft = (10, 10) # set the position of the rectangular object
         screen.blit(text, textRect)
-
-    
+            
         pg.display.flip()
     
     # source : https://github.com/Mekire/pygame-image-outline/blob/master/outline.py
-    def draw_outline(self, img, coords):
+    def draw_outline(self, img, coords, color):
         outline = pg.mask.from_surface(img).outline()
         outline_image = pg.Surface(img.get_size()).convert_alpha()
         outline_image.fill((0,0,0,0))
         for point in outline:
-            outline_image.set_at(point, (255, 255, 255))
+            outline_image.set_at(point, color)
         x,y = coords
         self.screen.blit(outline_image, (x+1, y  ))
         self.screen.blit(outline_image, (x  , y+1))
         self.screen.blit(outline_image, (x-1, y  ))
         self.screen.blit(outline_image, (x  , y-1))
-        
     
+    # source : https://stackoverflow.com/a/63409603
+    def draw_custom_cursor(self, cursor_img):
+        pg.mouse.set_visible(False)
+        cursor_img_rect = cursor_img.get_rect()
+        pos = pg.mouse.get_pos()
+        cursor_img_rect.center = pos # update position 
+        self.draw_outline(cursor_img, cursor_img_rect.topleft, (255, 0, 0))
+        self.screen.blit(cursor_img, cursor_img_rect) # draw the cursor
+        

@@ -20,12 +20,14 @@ class Settings:
 	# TERRAIN_IMG_PATH = '../img/terrain6.jpg'
 	SKY_IMG_PATH = '../img/sky3.jpg'
 	# SKY_IMG_PATH = TERRAIN_IMG_PATH
-	WORM_IMG_PATH = "../img/worm.png"
+	WORM_IMG_PATH = '../img/worm.png'
+	TARGET_IMG_PATH = '../img/target.png'
+	
 	BACKGROUNDCOLOR = (30, 30, 100)
 	WORMCOLOR = (230, 143, 124)
 	FONTNAME = "freesansbold.ttf"
-	FONTSIZEBIG = 20
-	FONTSIZESMALL = 10
+	FONTSIZEBIG = 30
+	FONTSIZESMALL = 12
 	HPCOLORS = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0), (0, 255, 255), (255, 0, 255), (255, 165, 0), (255, 255, 255)]
 	NUMBEROFPLAYERS = 2
 	WORMSBYPLAYER = 1
