@@ -41,20 +41,24 @@ class Terrain:
 	def __init__(self, map, square_size, generation_threshold):
 		self.generation_threshold = generation_threshold # the threshold above which terrain will be placed
 		self.square_size = square_size # number of pixels in a square side
-		terrainSurfaces = set()
 		
+		self.surfaces = self.init_surfaces(map) # a set of TerrainSurface
+		
+		polygons = self.init_polygons() # a unordered list of Polygon objects
+		self.polygons = polygons
+	
+	# output : l'ensemble des SurfaceTerrain correspondant à la map d'input
+	def init_surfaces(self, map):
+		terrainSurfaces = set()
 		for i in range(len(map)-1):
 			for j in range(len(map[i])-1):
 				coefs = (map[i][j], map[i][j+1], map[i+1][j+1], map[i+1][j])
 				surfaces = self.getLignes(coefs, (i*self.square_size, j*self.square_size))
 				terrainSurfaces = terrainSurfaces.union(surfaces)
-		self.surfaces = terrainSurfaces
-		
-		polygons = self.init_points_lists() # a list of polygons
-		self.polygons = polygons
+		return terrainSurfaces
 	
 	# input : les coefs des 4 coins d'un carré, ses coordonées du coin supérieur gauche
-	# output : la liste des lignes passant par ce carré
+	# output : l'ensemble des lignes passant par ce carré
 	# algorithme de marching squares : https://jamie-wong.com/2014/08/19/metaballs-and-marching-squares/
 	def getLignes(self, cornersCoef, topleftCoord):
 		y = topleftCoord[0]
@@ -119,7 +123,7 @@ class Terrain:
 			case _: # cases 0 and 15 : no terrain limitation (air square or full terrain square)
 				return {}
 	
-	def init_points_lists(self):
+	def init_polygons(self):
 		polygons = []
 		current_list = []
 		surfaces = self.surfaces.copy()
@@ -160,7 +164,6 @@ class Terrain:
 def coords_almost_equals(c, d):
 	epsilon = 0.001
 	return (abs(c[0]-d[0]) < epsilon and abs(c[1]-d[1]) < epsilon)
-	# return c == d
 
 def middleCoord(c1, c2):
 	return ((c1[0]+c2[0])/2, (c1[1]+c2[1])/2)

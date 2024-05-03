@@ -36,6 +36,9 @@ class View:
         self.target_img = pg.image.load(Settings.TARGET_IMG_PATH)
         self.target_img = pg.transform.scale(self.target_img, (20, 20))
         
+        self.hereimg = pg.image.load(Settings.HERE_IMG_PATH)
+        self.hereimg = pg.transform.scale(self.hereimg, (20, 20))
+        
     
     def update_terrain_img(self, game):
         cropped_img = pg.Surface((Settings.XMAX, Settings.YMAX), pg.SRCALPHA)

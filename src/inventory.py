@@ -7,7 +7,7 @@ class Inventory:
     def __init__(self):
         self.selectedItem = 0
         self.items = [Item.Grenade, Item.Bazooka, Item.Teleporter, Item.PneumaticDrill]
-        self.itemsSprites = [1, 0, 21, 52]
+        self.itemsSprites = [1, 0, 34, 52]
         self.sprites = pg.image.load("../img/weapons.png")
 
     def changeSelectedItem(self):
@@ -24,7 +24,7 @@ class Inventory:
             bazookaShot = Bazooka(worm.x, worm.y, worm.aimAngle, worm.powerCharge)
             objects.append(bazookaShot)
         elif self.currentItem() == Item.PneumaticDrill:
-            pneumaticDrill = PneumaticDrill(worm.x, worm.y, worm.aimAngle)
+            pneumaticDrill = PneumaticDrill(worm.x, worm.y, worm.aimAngle, worm.powerCharge)
             objects.append(pneumaticDrill)
 
 

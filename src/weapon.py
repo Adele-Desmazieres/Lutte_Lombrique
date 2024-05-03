@@ -33,16 +33,18 @@ class Teleporter(Utility):
 class PneumaticDrill(Utility, PhysicalSphere, Explosive):
     radius = 8
     bouncingAbsorption = 0.6
-    explosionRadius = 20
+    explosionRadius = 10
     projection_force_max = 2 # Force minimale pour faire tomber le vers (qui autrement ne bouge pas si du terrain est détruit sous ses "pieds")
     projection_force_min = 1
+    nbExplosions = 15
 
-    def __init__(self, x, y, angle):
+    def __init__(self, x, y, angle, power):
         Utility.__init__(self)
         PhysicalSphere.__init__(self, x, y, self.radius)
         self.angle = angle
-        self.deplacementVec.vy = math.sin(math.radians(angle)) * 30
-        self.deplacementVec.vx = math.cos(math.radians(angle)) * 30
+        power = power / 5
+        self.deplacementVec.vy = math.sin(math.radians(angle)) * power
+        self.deplacementVec.vx = math.cos(math.radians(angle)) * power
         self.collisionDetected = False
         self.collisionPoint = (0, 0)
 
@@ -52,13 +54,11 @@ class PneumaticDrill(Utility, PhysicalSphere, Explosive):
                 self.x - self.radius + self.deplacementVec.vx < Settings.XMIN):
             self.collisionDetected = True
             self.collisionPoint = (self.x, self.y)
-            print("x = {}, y = {} ".format(self.x, self.y))
 
         if (self.y + self.radius + self.deplacementVec.vy > Settings.YMAX) or (
                 self.y - self.radius + self.deplacementVec.vy < Settings.YMIN):
             self.collisionDetected = True
             self.collisionPoint = (self.x, self.y)
-
 
         for surface in terrain.surfaces:
             if self.line_intersect(self.deplacementVec, surface):
@@ -72,10 +72,7 @@ class PneumaticDrill(Utility, PhysicalSphere, Explosive):
 
 
     def draw(self, screen):
-        for center in self.centers:
-            x, y = center
-            # print("({}, {})".format(x, y))
-            pg.draw.circle(screen, (255, 0, 0), center, self.radius)
+        pg.draw.circle(screen, (150, 10, 150), (self.x, self.y), self.radius)
 
 
 class Weapon:
@@ -107,7 +104,7 @@ class Bazooka(Weapon, PhysicalSphere, Explosive):
     explosionRadius = 50
 
     def __init__(self, x, y, angle, power):
-        Weapon.__init__(self, 60)
+        Weapon.__init__(self, 80)
         PhysicalSphere.__init__(self, x, y, self.radius)
         power = power / 6
         self.deplacementVec.vy = math.sin(math.radians(angle)) * power

@@ -64,7 +64,7 @@ class Explosive:
                 min_distance = min(math.sqrt((x - cx) ** 2 + (y - cy) ** 2) for cx, cy in self.centers)
 
                 updatelimit = self.explosionRadius + Settings.MAP_SQUARE_SIZE * 2
-                if min_distance <= updatelimit and newmap[i][j] >= Settings.MAP_THRESHOLD:
+                if min_distance <= updatelimit:
                     newvalue = min_distance * (Settings.MAP_THRESHOLD + 1) / updatelimit
                     newmap[i][j] = min(newmap[i][j], newvalue)
 

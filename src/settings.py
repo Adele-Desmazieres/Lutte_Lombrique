@@ -3,7 +3,7 @@ import random as rd
 class Settings:
 	
 	GRAVITY = 0.18
-	FRICTION = 0.999 # more like fluidity, used to multiply a vector by this to slow it down
+	FRICTION = 0.8 # more like fluidity, used to multiply a vector by this to slow it down
 	BOUNCINGABSORPTION = 0.6
 	MAX_POWER_CHARGE = 100
 	
@@ -17,19 +17,18 @@ class Settings:
 	MAP_THRESHOLD = 5 # seuil entre le terrain si coef supérieur, et l'air si coef inférieur
 	
 	TERRAIN_IMG_PATH = '../img/terrain' + str(rd.randrange(1, 5)) + '.jpg'
-	# TERRAIN_IMG_PATH = '../img/terrain6.jpg'
 	SKY_IMG_PATH = '../img/sky3.jpg'
-	# SKY_IMG_PATH = TERRAIN_IMG_PATH
 	WORM_IMG_PATH = '../img/worm.png'
 	TARGET_IMG_PATH = '../img/target.png'
+	HERE_IMG_PATH = '../img/here.png'
 	
 	BACKGROUNDCOLOR = (30, 30, 100)
 	WORMCOLOR = (230, 143, 124)
 	FONTNAME = "freesansbold.ttf"
 	FONTSIZEBIG = 30
 	FONTSIZESMALL = 12
-	HPCOLORS = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0), (0, 255, 255), (255, 0, 255), (255, 165, 0), (255, 255, 255)]
-	NUMBEROFPLAYERS = 3
+	HPCOLORS = [(255, 10, 10), (10, 255, 10), (0, 100, 255), (200, 200, 0), (0, 200, 200), (200, 0, 200), (100, 100, 0), (200, 200, 200)]
+	NUMBEROFPLAYERS = 8
 	WORMSBYPLAYER = 1
 	NUMBERMILLISECONDSTURN = 30000
 	JUMPPOWER = 4

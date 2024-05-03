@@ -104,12 +104,15 @@ class Worm(PhysicalSphere, Explosive):
         if self.powerCharge < Settings.MAX_POWER_CHARGE:
             self.powerCharge += 2
 
-    def draw(self, view, screen, outline=False):
+    def draw(self, view, screen, isPlaying=False):
         # affiche le worm
         x2 = self.x + self.radius - self.width
         y2 = self.y + self.radius - self.height
-        if outline:
+        
+        if isPlaying:
             view.draw_outline(self.image, (x2, y2), (255, 255, 255))
+            self.draw_is_playing(view.hereimg, screen)
+        
         screen.blit(self.image, (x2, y2))
 
         # affiche sa hitbox
@@ -167,8 +170,13 @@ class Worm(PhysicalSphere, Explosive):
         end_left = (end_x - dx * end_thickness / 2, end_y - dy * end_thickness / 2)
         end_right = (end_x + dx * end_thickness / 2, end_y + dy * end_thickness / 2)
 
-        s = pg.Surface((1000,750))
-        pg.draw.polygon(screen, color, [start_left, start_right, end_right, end_left])
+        # s = pg.Surface((1000,750))
+        pg.draw.polygon(screen, color, [start_left, start_right, end_right, end_left], 1)
+
+    def draw_is_playing(self, img, screen):
+        imgRect = img.get_rect() # create a rectangular object for the text surface object
+        imgRect.center = (self.x, self.y - self.radius*4) # set the center of the rectangular object
+        screen.blit(img, imgRect)
 
     def refreshState(self, game):
         if (self.x < Settings.XMIN # Out of map

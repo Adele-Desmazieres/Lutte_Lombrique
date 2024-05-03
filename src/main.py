@@ -115,7 +115,7 @@ def mainloop(game, view):
                 if pressed[pg.K_SPACE]:
                     game.worms[game.current_worm_id].charge()
         
-        # TODO : sortir ca du main si possible
+        # TODO : sortir ca du main (pas fait par manque de temps, mais devrait être dans weapon.py)
         for obj in game.objects:
             if isinstance(obj, Grenade):
                 if pg.time.get_ticks() - obj.creation_tick > 3000:
@@ -131,13 +131,18 @@ def mainloop(game, view):
                     game.state = GameState.INTERACTIVE
             if isinstance(obj, PneumaticDrill):
                 if obj.collisionDetected:
-                    (x, y) = obj.collisionPoint
-                    dx = obj.explosionRadius * math.cos(math.radians(obj.angle))
-                    dy = obj.explosionRadius * math.sin(math.radians(obj.angle))
+                    # x, y = obj.collisionPoint
+                    angle = obj.deplacementVec.getAngleRadians()
+                    dx = obj.explosionRadius * math.cos(angle)
+                    dy = obj.explosionRadius * math.sin(angle)
                     cX, cY = obj.collisionPoint
-                    centers = [(cX, cY),
-                                    (cX + dx, cY + dy),
-                                    (cX + 2 * dx, cY + 2 * dy)]
+                    # cX, cY = (obj.x, obj.y)
+                    centers = []
+                    for i in range(PneumaticDrill.nbExplosions):
+                    # centers = [(cX, cY),
+                                # (cX + dx, cY + dy),
+                                # (cX + 2 * dx, cY + 2 * dy)]
+                        centers.append((cX + i * dx, cY + i * dy))
                     obj.explode(game, centers)
                     for center in obj.centers:
                         Explosion.draw_explosion(screen, center, obj.explosionRadius)
