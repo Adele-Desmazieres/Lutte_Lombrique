@@ -108,11 +108,9 @@ def mainloop(game, view):
             elif game.inventory.currentItem() in game.ranged:
                 if pressed[pg.K_q]:
                     game.worms[game.current_worm_id].aimLeft()
-                    # print(game.worms[game.current_worm_id].aimAngle)
 
                 if pressed[pg.K_d]:
                     game.worms[game.current_worm_id].aimRight()
-                    # print(game.worms[game.current_worm_id].aimAngle)
 
                 if pressed[pg.K_SPACE]:
                     game.worms[game.current_worm_id].charge()
@@ -153,6 +151,9 @@ def mainloop(game, view):
             wormIndex = game.worms.index(w)
             if w.hp <= 0:
                 game.worms.remove(w)
+                if game.current_worm_id >= len(game.worms):
+                    game.current_worm_id = 0
+
                 if w.shouldExplode:
                     Explosion.draw_explosion(screen, (w.x, w.y), 30)
                     w.explode(game, [(w.x, w.y)])
@@ -160,7 +161,6 @@ def mainloop(game, view):
                 if len([w for w in game.worms if w.playerIndex == playerIndex]) == 0:
                     actualPlayers.remove(playerIndex)
                     deadPlayersThisTurn = [playerIndex]
-
 
         # TODO: si plus qu'un seul wormms, lui attribuer la victoire
         if len(game.worms) <= 1:
@@ -184,8 +184,7 @@ def mainloop(game, view):
         for o in game.objects:
             o.updatePos(game.terrain)
 
-        if game.current_worm_id < len(game.worms):
-            view.draw(game)
+        view.draw(game)
 
         framerate = game.clock.tick(40)
         game.turnTimer += framerate
