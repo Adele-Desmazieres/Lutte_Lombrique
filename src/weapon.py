@@ -55,8 +55,8 @@ class PneumaticDrill(Utility, PhysicalSphere, Explosive):
             self.collisionDetected = True
             self.collisionPoint = (self.x, self.y)
 
-        if (self.y + self.radius + self.deplacementVec.vy > Settings.YMAX) or (
-                self.y - self.radius + self.deplacementVec.vy < Settings.YMIN):
+        if (self.y + self.radius + self.deplacementVec.vy > Settings.YMAX): #or (
+                #self.y - self.radius + self.deplacementVec.vy < Settings.YMIN):
             self.collisionDetected = True
             self.collisionPoint = (self.x, self.y)
 
@@ -120,8 +120,8 @@ class Bazooka(Weapon, PhysicalSphere, Explosive):
             self.collisionDetected = True
             self.collisionPoint = (self.x, self.y)
 
-        elif (self.y + self.radius + self.deplacementVec.vy > Settings.YMAX) or (
-                self.y - self.radius + self.deplacementVec.vy < Settings.YMIN):
+        elif (self.y + self.radius + self.deplacementVec.vy > Settings.YMAX):# or (
+                #self.y - self.radius + self.deplacementVec.vy < Settings.YMIN):
             self.collisionDetected = True
             self.collisionPoint = (self.x, self.y)
             

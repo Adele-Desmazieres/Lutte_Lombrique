@@ -181,13 +181,13 @@ class Worm(PhysicalSphere, Explosive):
     def refreshState(self, game):
         if (self.x < Settings.XMIN # Out of map
             or self.x > Settings.XMAX
-            or self.y < Settings.YMIN
-            or self.y > Settings.YMAX)\
+            #or self.y < Settings.YMIN
+            or self.y > Settings.YMAX) \
                 or self.y > (Settings.YMAX - (Settings.YMAX * (game.numberOfTurns / Settings.MAX_TURNS_NUMBER))): # Under water
             self.hp = 0
             self.shouldExplode = False
 
     def ejected(self, vec):
-        self.deplacementVec = vec
+        self.deplacementVec.add(vec)
         self.stuckGround = False
 
