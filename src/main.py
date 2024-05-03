@@ -34,7 +34,7 @@ def show_end_game_screen(screen, winners):
             if event.type == pg.QUIT:
                 waiting = False
                     
-            if event.type == pg.K_ESCAPE:
+            if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
                 waiting = False
     
     pg.quit()
