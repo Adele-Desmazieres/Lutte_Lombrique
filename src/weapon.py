@@ -83,7 +83,7 @@ class Weapon:
 class Grenade(Weapon, PhysicalSphere, Explosive):
     radius = 8
     bouncingAbsorption = 0.6
-    explosionRadius = 60
+    explosionRadius = 65
     projection_force_max = 18
     projection_force_min = 12
 
@@ -101,7 +101,7 @@ class Grenade(Weapon, PhysicalSphere, Explosive):
 class Bazooka(Weapon, PhysicalSphere, Explosive):
     radius = 8
     bouncingAbsorption = 0.6
-    explosionRadius = 50
+    explosionRadius = 45
 
     def __init__(self, x, y, angle, power):
         Weapon.__init__(self, 80)
