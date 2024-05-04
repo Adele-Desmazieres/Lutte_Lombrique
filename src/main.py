@@ -8,7 +8,6 @@ from worm import *
 from map2D import *
 from weapon import *
 from inventory import *
-from explosion import *
 from model import *
 from view import *
 
