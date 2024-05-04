@@ -1,6 +1,7 @@
 import math
-from settings import *
+import pygame as pg
 
+from settings import *
 from geometry import Vector
 
 
@@ -71,3 +72,19 @@ class Explosive:
         game.map = newmap
         game.initTerrain()
         game.view.set_terrain_img(game.view.update_terrain_img(game))
+    
+    def draw_explosion(screen, position, max_radius, colors):
+        num_circles = 10
+        clock = pg.time.Clock()
+    
+        pg.draw.circle(screen, rd.choice(colors), position, max_radius)
+    
+        for i in range(num_circles):
+            if max_radius < 5:
+                break
+            radius = rd.randint(5, max_radius)
+            color = rd.choice(colors)
+            pg.draw.circle(screen, color, position, radius)
+            max_radius -= 5
+            clock.tick(40)
+            pg.display.flip()

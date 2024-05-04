@@ -37,6 +37,7 @@ class PneumaticDrill(Utility, PhysicalSphere, Explosive):
     projection_force_max = 2 # Force minimale pour faire tomber le vers (qui autrement ne bouge pas si du terrain est détruit sous ses "pieds")
     projection_force_min = 1
     nbExplosions = 15
+    explosion_colors = [(190, 140, 237), (116, 77, 145), (94, 34, 117)]
 
     def __init__(self, x, y, angle, power):
         Utility.__init__(self)
@@ -86,6 +87,7 @@ class Grenade(Weapon, PhysicalSphere, Explosive):
     explosionRadius = 65
     projection_force_max = 18
     projection_force_min = 12
+    explosion_colors = [(240, 230, 50), (111, 173, 17), (29, 120, 47)]
 
     def __init__(self, x, y, angle, power):
         Weapon.__init__(self, 50)
@@ -102,6 +104,7 @@ class Bazooka(Weapon, PhysicalSphere, Explosive):
     radius = 8
     bouncingAbsorption = 0.6
     explosionRadius = 45
+    explosion_colors = [(255, 69, 0), (255, 150, 0), (255, 215, 0)]
 
     def __init__(self, x, y, angle, power):
         Weapon.__init__(self, 80)

@@ -14,6 +14,7 @@ class Worm(PhysicalSphere, Explosive):
     powerCharge = 0  # a percentage which will be divided by (100/max power)
     maxWalkableSlopeAngle = math.radians(65)
     id = -1
+    explosion_colors = [(228, 175, 237), (228, 175, 237), (247, 96, 203)]
 
     def __init__(self, x, y, playerIndex):
         PhysicalSphere.__init__(self, x, y, 10)

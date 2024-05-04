@@ -119,13 +119,13 @@ def mainloop(game, view):
         for obj in game.objects:
             if isinstance(obj, Grenade):
                 if pg.time.get_ticks() - obj.creation_tick > 3000:
-                    Explosion.draw_explosion(screen, (obj.x, obj.y), obj.explosionRadius)
+                    Explosive.draw_explosion(screen, (obj.x, obj.y), obj.explosionRadius, obj.explosion_colors)
                     obj.explode(game, [(obj.x, obj.y)])
                     game.objects.remove(obj)
                     game.state = GameState.INTERACTIVE
             if isinstance(obj, Bazooka):
                 if obj.collisionDetected:
-                    Explosion.draw_explosion(screen, obj.collisionPoint, obj.explosionRadius)
+                    Explosive.draw_explosion(screen, obj.collisionPoint, obj.explosionRadius, obj.explosion_colors)
                     obj.explode(game, [obj.collisionPoint])
                     game.objects.remove(obj)
                     game.state = GameState.INTERACTIVE
@@ -145,7 +145,7 @@ def mainloop(game, view):
                         centers.append((cX + i * dx, cY + i * dy))
                     obj.explode(game, centers)
                     for center in obj.centers:
-                        Explosion.draw_explosion(screen, center, obj.explosionRadius)
+                        Explosive.draw_explosion(screen, center, obj.explosionRadius, obj.explosion_colors)
 
                     game.objects.remove(obj)
                     game.state = GameState.INTERACTIVE
@@ -160,7 +160,8 @@ def mainloop(game, view):
                     game.current_worm_id = 0
 
                 if w.shouldExplode:
-                    Explosion.draw_explosion(screen, (w.x, w.y), 30)
+                    
+                    Explosive.draw_explosion(screen, (w.x, w.y), 30, w.explosion_colors)
                     w.explode(game, [(w.x, w.y)])
 
                 if len([w for w in game.worms if w.playerIndex == playerIndex]) == 0:
