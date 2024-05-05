@@ -3,7 +3,7 @@ import pygame as pg
 
 from settings import *
 from geometry import Vector
-
+import worm
 
 class Explosive:
     explosionRadius = 0
@@ -51,7 +51,7 @@ class Explosive:
                     w.ejected(Vector(vx, vy))
                 
                 # met des vers en chute libre, au cas ou du terrain soit détruit sous eux
-                if distance <= self.explosionRadius*1.5:
+                if distance - worm.Worm.radius <= self.explosionRadius*3:
                     w.stuckGround = False
 
     def explode_terrain(self, game):
