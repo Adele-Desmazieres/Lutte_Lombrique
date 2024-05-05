@@ -2,6 +2,7 @@ import pygame as pg
 from PIL import Image, ImageDraw
 from settings import *
 import random as rd
+import worm
 
 class View:
     
@@ -38,6 +39,11 @@ class View:
         
         self.hereimg = pg.image.load(Settings.HERE_IMG_PATH)
         self.hereimg = pg.transform.scale(self.hereimg, (20, 20))
+        
+        self.worm_img = pg.image.load(Settings.WORM_IMG_PATH)
+        self.worm_img_width = worm.Worm.radius * 1.5
+        self.worm_img_height = self.worm_img.get_height() * self.worm_img_width / self.worm_img.get_width()
+        self.worm_img = pg.transform.scale(self.worm_img, (self.worm_img_width, self.worm_img_height))
         
     
     def update_terrain_img(self, game):

@@ -24,10 +24,6 @@ class Worm(PhysicalSphere, Explosive):
         self.hp = 100
         self.damage = 10
         self.explosionRadius = 30
-        self.image = pg.image.load(Settings.WORM_IMG_PATH)
-        self.width = self.radius * 1.5
-        self.height = self.image.get_height() * self.width / self.image.get_width()
-        self.image = pg.transform.scale(self.image, (self.width, self.height))
         self.playerIndex = playerIndex
 
     def loseHp(self, damage):
@@ -107,14 +103,14 @@ class Worm(PhysicalSphere, Explosive):
 
     def draw(self, view, screen, isPlaying=False):
         # affiche le worm
-        x2 = self.x + self.radius - self.width
-        y2 = self.y + self.radius - self.height
+        x2 = self.x + self.radius - view.worm_img_width
+        y2 = self.y + self.radius - view.worm_img_height
         
         if isPlaying:
-            view.draw_outline(self.image, (x2, y2), (255, 255, 255))
+            view.draw_outline(view.worm_img, (x2, y2), (255, 255, 255))
             self.draw_is_playing(view.hereimg, screen)
         
-        screen.blit(self.image, (x2, y2))
+        screen.blit(view.worm_img, (x2, y2))
 
         # affiche sa hitbox
         # if self.stuckGround:

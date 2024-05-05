@@ -191,8 +191,10 @@ def mainloop(game, view):
 
         view.draw(game)
 
-        framerate = game.clock.tick(40)
-        game.turnTimer += framerate
+        frameduration = game.clock.tick(40)
+        game.turnTimer += frameduration
+        # print("FPS = ", 1/frameduration*1000)
+        
         if (game.turnTimer >= Settings.NUMBERMILLISECONDSTURN) or game.worm_has_fired:
             endTurn(game)
             deadPlayersThisTurn = []
